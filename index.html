@@ -270,12 +270,26 @@ void main(){
   float burstStart = mix(0.08, 0.86, hash(vec2(burstIndex, 621.7)));
   float burstSpan = mix(0.040, 0.085, hash(vec2(burstIndex, 626.4)));
   float burstLife = pulseWindow(burstCycle, burstStart, burstStart + burstSpan, 0.014) * burstChance;
-  vec2 burstPos = vec2(
-    mix(-0.58, 0.58, hash(vec2(burstIndex, 631.8))),
-    mix(-0.28, 0.28, hash(vec2(burstIndex, 636.1)))
+  float burstLocal = clamp((burstCycle - burstStart) / max(0.001, burstSpan), 0.0, 1.0);
+  vec2 burstBasePos = vec2(
+    mix(-0.72, 0.72, hash(vec2(burstIndex, 631.8))),
+    mix(-0.34, 0.34, hash(vec2(burstIndex, 636.1)))
   );
-  float burstFalloff = 1.0 - smoothstep(0.04, 0.78, length(p - burstPos));
-  float burstNoise = fbm((p - burstPos) * 6.2 + vec2(t * 0.26, -t * 0.18));
+  vec2 burstDrift = vec2(
+    sin(burstIndex * 1.37 + burstLocal * 6.4 + hash(vec2(burstIndex, 640.7)) * 6.2831853),
+    cos(burstIndex * 1.81 - burstLocal * 5.2 + hash(vec2(burstIndex, 644.9)) * 6.2831853)
+  ) * vec2(
+    mix(0.02, 0.12, hash(vec2(burstIndex, 649.3))),
+    mix(0.01, 0.08, hash(vec2(burstIndex, 653.6)))
+  );
+  vec2 burstPos = burstBasePos + burstDrift * smoothstep(0.06, 0.90, burstLocal);
+  vec2 burstRel = p - burstPos;
+  float burstAngle = hash(vec2(burstIndex, 657.2)) * 6.2831853;
+  vec2 burstDomain = rot(burstAngle) * burstRel;
+  float burstStretch = mix(0.78, 1.38, hash(vec2(burstIndex, 661.7)));
+  burstDomain *= vec2(burstStretch, 1.0 / burstStretch);
+  float burstFalloff = 1.0 - smoothstep(0.04, 0.82, length(burstDomain));
+  float burstNoise = fbm(burstDomain * 6.2 + vec2(t * 0.26, -t * 0.18));
   float burst = burstLife * burstFalloff * smoothstep(0.22, 0.96, burstNoise);
 
   vec3 adv = texture2D(uPrev, uv - flow).rgb;
@@ -562,16 +576,28 @@ void main(){
   float burstSpan = mix(0.040, 0.085, hash(vec2(burstIndex, 626.4)));
   float burstPulse = pulseWindow(burstCycle, burstStart, burstStart + burstSpan, 0.014) * burstChance;
   float burstLocal = clamp((burstCycle - burstStart) / max(0.001, burstSpan), 0.0, 1.0);
-  vec2 burstOrigin = vec2(
-    mix(-0.58, 0.58, hash(vec2(burstIndex, 631.8))),
-    mix(-0.28, 0.28, hash(vec2(burstIndex, 636.1)))
+  vec2 burstBaseOrigin = vec2(
+    mix(-0.72, 0.72, hash(vec2(burstIndex, 631.8))),
+    mix(-0.34, 0.34, hash(vec2(burstIndex, 636.1)))
   );
+  vec2 burstDrift = vec2(
+    sin(burstIndex * 1.37 + burstLocal * 6.4 + hash(vec2(burstIndex, 640.7)) * 6.2831853),
+    cos(burstIndex * 1.81 - burstLocal * 5.2 + hash(vec2(burstIndex, 644.9)) * 6.2831853)
+  ) * vec2(
+    mix(0.02, 0.12, hash(vec2(burstIndex, 649.3))),
+    mix(0.01, 0.08, hash(vec2(burstIndex, 653.6)))
+  );
+  vec2 burstOrigin = burstBaseOrigin + burstDrift * smoothstep(0.06, 0.90, burstLocal);
   vec2 burstP = waveDomain - burstOrigin;
-  float burstWaveA = sin(length(burstP * vec2(1.35, 0.92)) * 42.0 - burstLocal * 15.0 + layerA * 5.0) * 0.5 + 0.5;
-  float burstWaveB = sin(dot(burstP * 7.0 + warp * 1.5, vec2(1.1, -1.7)) + burstLocal * 18.0 + layerC * 4.0) * 0.5 + 0.5;
-  float burstGrain = fbm(burstP * 7.5 + warp * 1.8 + vec2(t * 0.18, -t * 0.13));
+  float burstAngle = hash(vec2(burstIndex, 657.2)) * 6.2831853;
+  vec2 burstPr = rot(burstAngle) * burstP;
+  float burstStretch = mix(0.78, 1.38, hash(vec2(burstIndex, 661.7)));
+  burstPr *= vec2(burstStretch, 1.0 / burstStretch);
+  float burstWaveA = sin(length(burstPr * vec2(1.35, 0.92)) * 42.0 - burstLocal * 15.0 + layerA * 5.0) * 0.5 + 0.5;
+  float burstWaveB = sin(dot(burstPr * 7.0 + warp * 1.5, vec2(1.1, -1.7)) + burstLocal * 18.0 + layerC * 4.0) * 0.5 + 0.5;
+  float burstGrain = fbm(burstPr * 7.5 + warp * 1.8 + vec2(t * 0.18, -t * 0.13));
   float burstSharp = smoothstep(0.66, 0.995, burstWaveA * 0.48 + burstWaveB * 0.34 + burstGrain * 0.18);
-  float burstFalloff = 1.0 - smoothstep(0.10, 1.25, length(burstP));
+  float burstFalloff = 1.0 - smoothstep(0.10, 1.25, length(burstPr));
   float burstTurbulence = burstSharp * burstFalloff * burstPulse;
   float centerRipplePeriod = 68.0;
   float centerRippleIndex = floor(t / centerRipplePeriod);
@@ -581,24 +607,16 @@ void main(){
   float centerRippleSpan = mix(0.20, 0.30, hash(vec2(centerRippleIndex, 83.7)));
   float centerRipplePulse = pulseWindow(centerRippleCycle, centerRippleStart, centerRippleStart + centerRippleSpan, 0.10) * centerRippleChance;
   float centerRippleLocal = clamp((centerRippleCycle - centerRippleStart) / max(0.001, centerRippleSpan), 0.0, 1.0);
-  vec2 centerOriginBase = vec2(
-    mix(-0.34, 0.34, hash(vec2(centerRippleIndex, 421.7))),
-    mix(-0.18, 0.18, hash(vec2(centerRippleIndex, 427.3)))
-  );
-  vec2 centerOriginDrift = vec2(
-    sin(centerRippleIndex * 1.93 + centerRippleLocal * 3.4 + hash(vec2(centerRippleIndex, 433.6)) * 6.2831853),
-    cos(centerRippleIndex * 1.57 - centerRippleLocal * 2.8 + hash(vec2(centerRippleIndex, 439.2)) * 6.2831853)
-  ) * vec2(
-    mix(0.015, 0.085, hash(vec2(centerRippleIndex, 445.1))),
-    mix(0.012, 0.060, hash(vec2(centerRippleIndex, 449.8)))
-  );
-  vec2 centerOrigin = centerOriginBase + centerOriginDrift * smoothstep(0.06, 0.92, centerRippleLocal);
-  vec2 centerP = p - centerOrigin;
-  float centerAngle = atan(centerP.y, centerP.x);
+  float centerAngle = atan(p.y, p.x);
   float centerWarp =
       sin(centerAngle * 3.0 + centerRippleLocal * 4.2 + layerA * 1.1) * 0.018 +
       sin(centerAngle * 6.0 - centerRippleLocal * 2.8 + layerB * 1.0) * 0.010 +
-      (fbm(centerP * 1.7 + warp * 0.18 + centerRippleLocal * 0.55) - 0.5) * 0.026;
+      (fbm(p * 1.7 + warp * 0.18 + centerRippleLocal * 0.55) - 0.5) * 0.026;
+  vec2 centerOrigin = vec2(
+    mix(-0.10, 0.10, hash(vec2(centerRippleIndex, 421.7))),
+    mix(-0.08, 0.08, hash(vec2(centerRippleIndex, 427.3)))
+  );
+  vec2 centerP = p - centerOrigin * (1.0 - smoothstep(0.0, 0.62, centerRippleLocal));
   float centerRadius = length(centerP * vec2(
     1.0 + 0.025 * sin(centerRippleLocal * 2.4 + layerB),
     1.0 + 0.020 * cos(centerRippleLocal * 2.1 + layerC)
@@ -611,8 +629,8 @@ void main(){
   float centerThickness =
       0.050 +
       0.026 * (sin(centerAngle * 4.0 + centerRippleLocal * 4.8) * 0.5 + 0.5) +
-      0.026 * fbm(centerP * 2.5 + vec2(centerRippleLocal * 0.8, -centerRippleLocal * 0.6));
-  float centerFreq = mix(18.5, 23.5, fbm(centerP * 1.1 + warp * 0.08));
+      0.026 * fbm(p * 2.5 + vec2(centerRippleLocal * 0.8, -centerRippleLocal * 0.6));
+  float centerFreq = mix(18.5, 23.5, fbm(p * 1.1 + warp * 0.08));
   float centerWavePhase = centerRadius * centerFreq - centerRippleLocal * 5.2;
   float centerWave = sin(centerWavePhase);
   float centerRingIndex = floor((centerWavePhase + 6.2831853) / 6.2831853);
@@ -624,7 +642,7 @@ void main(){
     1.0,
     centerWave * 0.5 + 0.5
   );
-  float centerBreakup = smoothstep(0.12, 0.84, fbm(centerP * 3.0 + warp * 0.18 + centerRippleLocal * 1.1));
+  float centerBreakup = smoothstep(0.12, 0.84, fbm(p * 3.0 + warp * 0.18 + centerRippleLocal * 1.1));
   float centerEventFade =
       smoothstep(0.00, 0.16, centerRippleLocal) *
       (1.0 - smoothstep(0.72, 1.00, centerRippleLocal));
