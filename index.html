@@ -1215,6 +1215,22 @@ const uFluid = gl.getUniformLocation(renderProgram, 'uFluid');
 const SIM_W = 512;
 const SIM_H = 148;
 
+function rand01(){
+  if (window.crypto && window.crypto.getRandomValues) {
+    const arr = new Uint32Array(1);
+    window.crypto.getRandomValues(arr);
+    return arr[0] / 4294967296;
+  }
+  return Math.random();
+}
+
+const sessionSeed = rand01() * 1000.0;
+const startTimeOffset = rand01() * 360.0;
+const prewarmSteps = 10 + Math.floor(rand01() * 28.0);
+const prewarmStepSize = 0.041 + rand01() * 0.035;
+const fluidSeedA = 11.0 + sessionSeed * 0.73;
+const fluidSeedB = 37.0 + sessionSeed * 1.91;
+
 function makeFluidTexture(seed){
   const data = new Uint8Array(SIM_W * SIM_H * 4);
   for (let y = 0; y < SIM_H; y++) {
@@ -1247,7 +1263,7 @@ function makeFramebuffer(tex){
   return fb;
 }
 
-const fluidTex = [makeFluidTexture(11.0), makeFluidTexture(37.0)];
+const fluidTex = [makeFluidTexture(fluidSeedA), makeFluidTexture(fluidSeedB)];
 const fluidFbo = [makeFramebuffer(fluidTex[0]), makeFramebuffer(fluidTex[1])];
 
 gl.bindFramebuffer(gl.FRAMEBUFFER, fluidFbo[0]);
@@ -1296,9 +1312,15 @@ function stepFluid(t){
   fluidWrite = tmp;
 }
 
+if (fluidEnabled) {
+  for (let i = 0; i < prewarmSteps; i++) {
+    stepFluid(startTimeOffset + i * prewarmStepSize);
+  }
+}
+
 function render(now){
   resize();
-  const t = (now - start) * 0.0030;
+  const t = startTimeOffset + (now - start) * 0.0030;
 
   stepFluid(t);
 
