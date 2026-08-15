@@ -1478,39 +1478,11 @@ function stopLogoAnimation(){
 const videoPlayer = document.getElementById('video-player');
 const videoStage = document.getElementById('video-stage');
 const soundToggle = document.getElementById('sound-toggle');
-const INTRO_HOLD_MS = 5000;
+const INTRO_HOLD_MS = 4000;
 const LOGO_FADE_MS = 1500;
 const FADE_OVERLAP_MS = 900;
 const PLAYER_PRIME_DELAY_MS = 300;
 const PLAYER_PRIME_PLAY_MS = 350;
-let youtubePlayerApi;
-
-function hideSoundToggleIfAudioIsPlaying() {
-  if (!youtubePlayerApi ||
-      youtubePlayerApi.getPlayerState() !== YT.PlayerState.PLAYING) return;
-
-  if (!youtubePlayerApi.isMuted() && youtubePlayerApi.getVolume() > 0) {
-    soundToggle.classList.add('is-hidden');
-  }
-}
-
-function initialiseYouTubePlayerApi() {
-  youtubePlayerApi = new YT.Player('video-player', {
-    events: {
-      onStateChange(event) {
-        if (event.data === YT.PlayerState.PLAYING) {
-          window.setTimeout(hideSoundToggleIfAudioIsPlaying, 100);
-        }
-      }
-    }
-  });
-}
-
-window.onYouTubeIframeAPIReady = initialiseYouTubePlayerApi;
-
-const youtubeApiScript = document.createElement('script');
-youtubeApiScript.src = 'https://www.youtube.com/iframe_api';
-document.head.appendChild(youtubeApiScript);
 
 function sendVideoCommand(func, args = []) {
   videoPlayer.contentWindow?.postMessage(JSON.stringify({
