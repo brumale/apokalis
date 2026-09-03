@@ -1478,6 +1478,8 @@ function stopLogoAnimation(){
 const videoPlayer = document.getElementById('video-player');
 const videoStage = document.getElementById('video-stage');
 const soundToggle = document.getElementById('sound-toggle');
+let youtubePlayer = null;
+let soundStateCheckId = null;
 const INTRO_HOLD_MS = 4000;
 const LOGO_FADE_MS = 1500;
 const FADE_OVERLAP_MS = 900;
@@ -1490,6 +1492,50 @@ function sendVideoCommand(func, args = []) {
     func,
     args
   }), 'https://www.youtube.com');
+}
+
+function hideSoundToggle() {
+  soundToggle.classList.add('is-hidden');
+  soundToggle.setAttribute('aria-hidden', 'true');
+  soundToggle.blur();
+
+  if (soundStateCheckId !== null) {
+    window.clearInterval(soundStateCheckId);
+    soundStateCheckId = null;
+  }
+}
+
+function syncSoundToggle() {
+  if (!youtubePlayer || soundToggle.classList.contains('is-hidden')) return;
+
+  try {
+    if (!youtubePlayer.isMuted() && youtubePlayer.getVolume() > 0) {
+      hideSoundToggle();
+    }
+  } catch (error) {
+    // The player can briefly be unavailable while switching playlist items.
+  }
+}
+
+function startSoundStateChecks() {
+  syncSoundToggle();
+  soundStateCheckId = window.setInterval(syncSoundToggle, 400);
+}
+
+window.onYouTubeIframeAPIReady = () => {
+  youtubePlayer = new YT.Player(videoPlayer, {
+    events: {
+      onReady: startSoundStateChecks,
+      onStateChange: syncSoundToggle
+    }
+  });
+};
+
+function loadYouTubeIframeApi() {
+  const script = document.createElement('script');
+  script.src = 'https://www.youtube.com/iframe_api';
+  script.async = true;
+  document.head.appendChild(script);
 }
 
 function loadVideoPlayer() {
@@ -1531,10 +1577,11 @@ soundToggle.addEventListener('click', () => {
   sendVideoCommand('unMute');
   sendVideoCommand('setVolume', [100]);
   sendVideoCommand('playVideo');
-  soundToggle.classList.add('is-hidden');
+  hideSoundToggle();
 });
 
 loadVideoPlayer();
+loadYouTubeIframeApi();
 window.addEventListener('load', startIntroSequence, { once:true });
 </script>
 </body>
