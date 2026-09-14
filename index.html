@@ -1481,6 +1481,7 @@ const videoStage = document.getElementById('video-stage');
 const soundToggle = document.getElementById('sound-toggle');
 let youtubePlayer = null;
 let soundStateCheckId = null;
+let captionsInitializedForVideo = null;
 const INTRO_HOLD_MS = 4000;
 const LOGO_FADE_MS = 1500;
 const FADE_OVERLAP_MS = 900;
@@ -1523,11 +1524,34 @@ function startSoundStateChecks() {
   soundStateCheckId = window.setInterval(syncSoundToggle, 400);
 }
 
+function initializeCaptions(event) {
+  const player = event.target;
+  const videoId = player.getVideoData()?.video_id;
+  if (!videoId || captionsInitializedForVideo === videoId) return;
+  if (!player.getOptions().includes('captions')) return;
+
+  // YouTube has no documented force-off parameter. Clear the initial track
+  // once per video, allowing viewers to enable captions afterward.
+  captionsInitializedForVideo = videoId;
+  try {
+    player.setOption('captions', 'track', {});
+  } catch (error) {
+    captionsInitializedForVideo = null;
+  }
+}
+
 window.onYouTubeIframeAPIReady = () => {
   youtubePlayer = new YT.Player(videoPlayer, {
     events: {
-      onReady: startSoundStateChecks,
-      onStateChange: syncSoundToggle
+      onReady: event => {
+        startSoundStateChecks();
+        initializeCaptions(event);
+      },
+      onApiChange: initializeCaptions,
+      onStateChange: event => {
+        syncSoundToggle();
+        initializeCaptions(event);
+      }
     }
   });
 };
