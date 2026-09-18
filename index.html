@@ -169,7 +169,7 @@ body.video-revealed #sound-toggle.is-hidden{
 <div id="video-stage" aria-hidden="true">
   <iframe
     id="video-player"
-    data-src="https://www.youtube.com/embed/7902GwM3Bvs?list=PLFpF_OTvyh1A&amp;autoplay=0&amp;mute=1&amp;playsinline=1&amp;controls=1&amp;enablejsapi=1&amp;fs=1&amp;cc_load_policy=0&amp;loop=1&amp;rel=0"
+    data-src="https://www.youtube.com/embed/videoseries?list=PLFpF_OTvyh1A&amp;autoplay=0&amp;mute=1&amp;playsinline=1&amp;controls=1&amp;enablejsapi=1&amp;fs=1&amp;cc_load_policy=0&amp;loop=1&amp;rel=0"
     title="APOKALIS playlist"
     allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
     referrerpolicy="strict-origin-when-cross-origin"
@@ -1494,8 +1494,63 @@ let captionsInitializedForVideo = null;
 const INTRO_HOLD_MS = 4000;
 const LOGO_FADE_MS = 1500;
 const FADE_OVERLAP_MS = 900;
-const PLAYER_PRIME_DELAY_MS = 300;
-const PLAYER_PRIME_PLAY_MS = 350;
+const PLAYLIST_ID = 'PLFpF_OTvyh1A';
+let dailyVideoReady = false;
+let introComplete = false;
+let videoRevealed = false;
+
+// A seeded shuffle gives every visitor the same rotation without browser storage.
+// Local calendar days advance through it, so adjacent days cannot repeat
+// (provided the playlist contains at least two distinct videos and is unchanged).
+function dailyPlaylistIndex(playlist, date = new Date()) {
+  const videos = [...new Set(playlist)].sort();
+  let seed = 2166136261;
+  for (const character of PLAYLIST_ID) {
+    seed = Math.imul(seed ^ character.charCodeAt(0), 16777619) >>> 0;
+  }
+  for (let i = videos.length - 1; i > 0; i--) {
+    seed += 0x6D2B79F5;
+    let random = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    random ^= random + Math.imul(random ^ (random >>> 7), 61 | random);
+    const j = Math.floor(((random ^ (random >>> 14)) >>> 0) / 4294967296 * (i + 1));
+    [videos[i], videos[j]] = [videos[j], videos[i]];
+  }
+  const day = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+  return playlist.indexOf(videos[((day % videos.length) + videos.length) % videos.length]);
+}
+
+function selectDailyVideo(player, attempt = 0) {
+  const playlist = player.getPlaylist();
+  if (!playlist?.length) {
+    if (attempt < 40) {
+      window.setTimeout(() => selectDailyVideo(player, attempt + 1), 250);
+    } else {
+      // Keep the playlist usable if YouTube does not expose its items.
+      dailyVideoReady = true;
+      revealVideo();
+    }
+    return;
+  }
+  player.mute();
+  player.cuePlaylist({ listType: 'playlist', list: PLAYLIST_ID,
+    index: dailyPlaylistIndex(playlist), startSeconds: 0 });
+  dailyVideoReady = true;
+  revealVideo();
+}
+
+function revealVideo() {
+  if (!introComplete || !dailyVideoReady || videoRevealed) return;
+  videoRevealed = true;
+  document.body.classList.add('logo-fading');
+  window.setTimeout(() => {
+    document.body.classList.add('video-revealed');
+    videoStage.removeAttribute('aria-hidden');
+    videoPlayer.removeAttribute('tabindex');
+    sendVideoCommand('mute');
+    sendVideoCommand('playVideo');
+    window.setTimeout(stopLogoAnimation, FADE_OVERLAP_MS);
+  }, LOGO_FADE_MS - FADE_OVERLAP_MS);
+}
 
 function sendVideoCommand(func, args = []) {
   videoPlayer.contentWindow?.postMessage(JSON.stringify({
@@ -1553,6 +1608,7 @@ window.onYouTubeIframeAPIReady = () => {
   youtubePlayer = new YT.Player(videoPlayer, {
     events: {
       onReady: event => {
+        selectDailyVideo(event.target);
         startSoundStateChecks();
         initializeCaptions(event);
       },
@@ -1576,34 +1632,13 @@ function loadVideoPlayer() {
   const playerUrl = new URL(videoPlayer.dataset.src);
   playerUrl.searchParams.set('origin', window.location.origin);
 
-  videoPlayer.addEventListener('load', () => {
-    window.setTimeout(() => {
-      sendVideoCommand('mute');
-      sendVideoCommand('seekTo', [0, true]);
-      sendVideoCommand('playVideo');
-
-      window.setTimeout(() => {
-        sendVideoCommand('pauseVideo');
-        sendVideoCommand('seekTo', [0, true]);
-      }, PLAYER_PRIME_PLAY_MS);
-    }, PLAYER_PRIME_DELAY_MS);
-  }, { once:true });
-
   videoPlayer.src = playerUrl.href;
 }
 
 function startIntroSequence() {
   window.setTimeout(() => {
-    document.body.classList.add('logo-fading');
-
-    window.setTimeout(() => {
-      document.body.classList.add('video-revealed');
-      videoStage.removeAttribute('aria-hidden');
-      videoPlayer.removeAttribute('tabindex');
-      sendVideoCommand('mute');
-      sendVideoCommand('playVideo');
-      window.setTimeout(stopLogoAnimation, FADE_OVERLAP_MS);
-    }, LOGO_FADE_MS - FADE_OVERLAP_MS);
+    introComplete = true;
+    revealVideo();
   }, INTRO_HOLD_MS);
 }
 
