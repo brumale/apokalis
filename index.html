@@ -75,7 +75,7 @@ body.logo-settled #gl,body.logo-settled #bevel{opacity:0}
 .bevel-blobB{opacity:.0612}
 .bevel-blobC{opacity:.042075}
 
-#logo-wrap{transition:top 1.5s cubic-bezier(.2,.7,.2,1),left 1.5s cubic-bezier(.2,.7,.2,1),width 1.5s cubic-bezier(.2,.7,.2,1),transform 1.5s cubic-bezier(.2,.7,.2,1);will-change:top,left,width,transform}
+#logo-wrap{transition:top 1.2s cubic-bezier(.2,.7,.2,1),left 1.2s cubic-bezier(.2,.7,.2,1),width 1.2s cubic-bezier(.2,.7,.2,1),transform 1.2s cubic-bezier(.2,.7,.2,1);will-change:top,left,width,transform}
 body.logo-settling #logo-wrap{top:clamp(52px,6.7vw,95px);left:50%;width:clamp(180px,22vw,280px);transform:translate(-50%,-50%)}
 body.player-active #logo-wrap{top:36px;left:50%;width:clamp(105px,11vw,145px);transform:translate(-50%,-50%);cursor:pointer;transition-duration:.8s}
 body.intro-complete #logo-wrap{transition-duration:.8s}
@@ -88,37 +88,36 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .film{display:block;width:100%;margin:0;padding:0;overflow:hidden;border:1px solid #303030;border-radius:0;background:#111;cursor:pointer;line-height:0}
 .film img{display:block;width:100%;height:auto;opacity:1;filter:none;transition:transform 1.4s ease-out}
 .gallery-grid:not(.has-appeared) .film{opacity:0}
-.gallery-grid.is-resetting .film{opacity:0}
-.gallery-grid.is-appearing .film{animation:film-emerge .85s cubic-bezier(.18,.7,.2,1) both;animation-delay:calc(var(--order) * 115ms)}
+.gallery-grid.is-resetting{opacity:1;transition:none}
+.gallery-grid.is-resetting .film{opacity:0!important;animation:none!important;transition:none!important}
+.gallery-grid.is-leaving{opacity:0;transition:opacity .45s ease}
+.gallery-grid.is-appearing .film{animation:film-emerge 1.2s cubic-bezier(.18,.7,.2,1) both;animation-delay:calc(var(--order) * 240ms)}
 @keyframes film-emerge{from{opacity:0;filter:brightness(0);transform:translateY(35px)}to{opacity:1;filter:brightness(1);transform:translateY(0)}}
 @media(hover:hover) and (pointer:fine){.film:hover img{transform:scale(1.025)}}
-.film:focus-visible,.close-player:focus-visible{outline:2px solid #fff;outline-offset:3px}
-@media(pointer:coarse){.film:focus-visible,.close-player:focus-visible,body.player-active #logo-wrap:focus-visible{outline:none}.close-player:hover{background:#111}}
+.film:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(pointer:coarse){.film:focus-visible,body.player-active #logo-wrap:focus-visible{outline:none}}
 #player-stage{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;background:#000;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .5s ease,visibility 0s linear .5s}
 #player-stage.is-open{visibility:visible;opacity:1;pointer-events:auto;transition-delay:0s}
-.player-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:flex-start;min-height:72px;padding:12px clamp(20px,3.5vw,54px);background:#000}
-.close-player{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #666;border-radius:50%;background:#111;color:#fff;cursor:pointer;opacity:0;transform:scale(.7);transition:opacity .35s ease,transform .35s ease}
-#player-stage.is-revealed .close-player{opacity:1;transform:scale(1);transition-delay:.48s}
-.close-player:hover{background:#2b2b2b}
-.close-player svg{display:block;width:18px;height:18px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round}
-.player-frame{position:relative;flex:1;min-height:0;overflow:hidden;opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
-#player-stage.is-revealed .player-frame{opacity:1;transform:translateY(0);transition-delay:.72s}
+#player-stage.is-closing{visibility:hidden;opacity:0;pointer-events:none;transition:none}
+.player-bar{flex:none;height:72px;background:#000}
+.player-frame{position:relative;flex:1;min-height:0;overflow:hidden}
 #video-player{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .25s ease}
 #video-player.is-ready{visibility:visible;opacity:1;pointer-events:auto}
-.video-placeholder{position:absolute;inset:0;z-index:1;display:grid;place-items:center;background:#000;opacity:0;pointer-events:none;transition:opacity .3s ease}
-.video-placeholder.is-visible{opacity:1;transition:none}
-.video-placeholder img{display:block;width:100%;height:100%;object-fit:contain;filter:brightness(.65)}
 .loading-indicator{position:absolute;inset:0;z-index:2;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
 .loading-indicator.is-visible{opacity:1}
-.loading-indicator img{display:block;width:48px;height:48px}
+.loading-indicator.has-error{pointer-events:auto}
+.loading-spinner{display:block;width:34px;height:34px;border:2px solid #4a4a4a;border-top-color:#fff;border-radius:50%;animation:spinner-turn .8s linear infinite}
+.loading-indicator.has-error .loading-spinner{display:none}
+.loading-error{display:none;color:#fff;font-size:13px;letter-spacing:.04em;text-decoration:underline;text-underline-offset:4px}
+.loading-indicator.has-error .loading-error{display:block}
+@keyframes spinner-turn{to{transform:rotate(360deg)}}
 .launch-image{position:fixed;z-index:8;display:block;object-fit:contain;pointer-events:none;will-change:left,top,width,height,opacity}
-.swipe-edge{display:none}
 @media(min-width:1700px){.gallery-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
 @media(max-width:1200px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{min-height:64px;padding:10px 14px}.player-frame{display:block}.swipe-edge{position:absolute;z-index:3;top:0;bottom:72px;display:block;width:18%;max-width:90px;touch-action:pan-y}.swipe-edge.left{left:0}.swipe-edge.right{right:0}}
+@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}}
 @media(max-width:380px){.gallery-grid{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.close-player,.player-frame,.film img,.video-placeholder,.loading-indicator{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}}
+@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner{animation:none!important}}
 </style>
 </head>
 <body>
@@ -126,19 +125,19 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
   <div class="gallery-inner">
     <div class="gallery-header" aria-hidden="true"></div>
     <div class="gallery-grid" aria-label="Choose a video">
-      <button class="film" data-number="7" data-title="ti ricordi" type="button" data-video="VGkt0qDVBxc" aria-label="Play ti ricordi" title="ti ricordi"><img src="music/7.png" width="1080" height="1920" alt="Radiating lines on black" fetchpriority="high"></button>
-      <button class="film" data-number="6" data-title="asasuzume" type="button" data-video="7902GwM3Bvs" aria-label="Play asasuzume" title="asasuzume"><img src="music/6.png" width="1080" height="1080" alt="Abstract floating forms"></button>
-      <button class="film" data-number="5" data-title="SSababa" type="button" data-video="ztqQJGFcfEk" aria-label="Play SSababa" title="SSababa"><img src="music/5.jpg" width="1200" height="1600" alt="White geometric lines on black"></button>
-      <button class="film" data-number="4" data-title="t r a u m" type="button" data-video="w6sMexD3D2I" aria-label="Play t r a u m" title="t r a u m"><img src="music/4.png" width="1080" height="1080" alt="Grey spiral on black"></button>
-      <button class="film" data-number="3" data-title="27" type="button" data-video="H5jzMdYkcQg" aria-label="Play 27" title="27"><img src="music/3.png" width="1080" height="1080" alt="Abstract circular artwork"></button>
-      <button class="film" data-number="2" data-title="Unbound" type="button" data-video="ITzUmmXda34" aria-label="Play Unbound" title="Unbound"><img src="music/2.jpeg" width="865" height="1537" alt="Portrait in bright sunlight"></button>
-      <button class="film" data-number="1" data-title="Spiralbound" type="button" data-video="Of0MV1Cwbx4" aria-label="Play Spiralbound" title="Spiralbound"><img src="music/1.jpeg" width="940" height="1253" alt="Spiderweb in warm light"></button>
+      <button class="film" data-title="ti ricordi" data-slug="ti-ricordi" type="button" data-video="VGkt0qDVBxc" aria-label="Play ti ricordi" title="ti ricordi"><img src="music/7.png" width="1080" height="1920" alt="Radiating lines on black" fetchpriority="high"></button>
+      <button class="film" data-title="asasuzume" data-slug="asasuzume" type="button" data-video="7902GwM3Bvs" aria-label="Play asasuzume" title="asasuzume"><img src="music/6.png" width="1080" height="1080" alt="Abstract floating forms"></button>
+      <button class="film" data-title="SSababa" data-slug="ssababa" type="button" data-video="ztqQJGFcfEk" aria-label="Play SSababa" title="SSababa"><img src="music/5.jpg" width="1200" height="1600" alt="White geometric lines on black"></button>
+      <button class="film" data-title="t r a u m" data-slug="t-r-a-u-m" type="button" data-video="w6sMexD3D2I" aria-label="Play t r a u m" title="t r a u m"><img src="music/4.png" width="1080" height="1080" alt="Grey spiral on black"></button>
+      <button class="film" data-title="27" data-slug="27" type="button" data-video="H5jzMdYkcQg" aria-label="Play 27" title="27"><img src="music/3.png" width="1080" height="1080" alt="Abstract circular artwork"></button>
+      <button class="film" data-title="Unbound" data-slug="unbound" type="button" data-video="ITzUmmXda34" aria-label="Play UNBOUND" title="Unbound"><img src="music/2.jpeg" width="865" height="1537" alt="Portrait in bright sunlight"></button>
+      <button class="film" data-title="Spiralbound" data-slug="spiralbound" type="button" data-video="Of0MV1Cwbx4" aria-label="Play Spiralbound" title="Spiralbound"><img src="music/1.jpeg" width="940" height="1253" alt="Spiderweb in warm light"></button>
     </div>
   </div>
 </main>
-<div id="player-stage" role="dialog" aria-modal="true" aria-label="Video player" aria-hidden="true">
-  <div class="player-bar"><button class="close-player" id="close-player" type="button" aria-label="Close video and see all videos"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg></button></div>
-  <div class="player-frame"><iframe id="video-player" title="APOKALIS video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="video-placeholder" id="video-placeholder" aria-hidden="true"><img id="placeholder-image" alt=""></div><div class="loading-indicator" id="loading-indicator" role="status" aria-label="Loading video" aria-hidden="true"><img src="loading.gif" alt=""></div><div class="swipe-edge left" aria-hidden="true"></div><div class="swipe-edge right" aria-hidden="true"></div></div>
+<div id="player-stage" role="region" aria-label="Video player" aria-hidden="true">
+  <div class="player-bar" aria-hidden="true"></div>
+  <div class="player-frame"><iframe id="video-player" title="APOKALIS video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="loading-indicator" id="loading-indicator" role="status" aria-label="Loading video" aria-hidden="true"><span class="loading-spinner"></span><a class="loading-error" id="loading-error" target="_blank" rel="noopener noreferrer">Open on YouTube</a></div></div>
 </div>
 <div id="logo-wrap" role="img" aria-label="APOKALIS"><canvas id="gl"></canvas>
   <svg id="bevel" viewBox="0 0 4000 1155" aria-hidden="true">
@@ -1460,37 +1459,34 @@ const galleryGrid = gallery.querySelector('.gallery-grid');
 const playerStage = document.getElementById('player-stage');
 let videoPlayer = document.getElementById('video-player');
 const playerFrame = playerStage.querySelector('.player-frame');
-const closePlayerButton = document.getElementById('close-player');
 const logo = document.getElementById('logo-wrap');
-const placeholder = document.getElementById('video-placeholder');
-const placeholderImage = document.getElementById('placeholder-image');
 const loadingIndicator = document.getElementById('loading-indicator');
+const loadingError = document.getElementById('loading-error');
 const films = [...galleryGrid.querySelectorAll('.film')];
+const filmsBySlug = new Map(films.map(film => [film.dataset.slug, film]));
 let lastSelectedFilm = null;
 let activeFilm = null;
 let openedWithKeyboard = false;
 let masonryFrame = null;
-let closeTimer = null;
 let unloadTimer = null;
 let revealTimer = null;
 let readinessTimer = null;
-let openingTimer = null;
-let playTimer = null;
-let returnTimer = null;
+let filmOrderTimer = null;
 let loadVersion = 0;
 let revealScheduledVersion = 0;
-let playbackScheduledVersion = 0;
-let playbackRequestedVersion = 0;
+let frameReadyVersion = 0;
+let loadingPhaseDoneVersion = 0;
+let loaderVisibleAt = 0;
 let youtubePlayer = null;
 let youtubeReady = false;
 let playerStarting = false;
 let fallbackMode = false;
 let apiPromise = null;
 let launchImage = null;
-let launchCanFadeAt = 0;
+let pendingHistoryVersion = 0;
+let pendingHistoryMode = 'none';
 const INTRO_HOLD_MS = 4000;
-const LAUNCH_MS = 650;
-const RETURN_MS = 750;
+const LAUNCH_MS = 850;
 
 function layoutMasonry() {
   masonryFrame = null;
@@ -1512,15 +1508,16 @@ function scheduleMasonry() {
 }
 
 function showFilms(returningFilm = null) {
-  if (returningFilm) {
-    let order = 2;
-    films.forEach(film => film.style.setProperty('--order', film === returningFilm ? 0 : order++));
-    window.setTimeout(() => {
-      films.forEach((film, index) => film.style.setProperty('--order', index));
-    }, 2200);
-  }
+  window.clearTimeout(filmOrderTimer);
   galleryGrid.classList.add('is-resetting', 'has-appeared');
-  galleryGrid.classList.remove('is-appearing');
+  galleryGrid.classList.remove('is-appearing', 'is-leaving');
+  if (returningFilm) {
+    let order = 1;
+    films.forEach(film => film.style.setProperty('--order', film === returningFilm ? 0 : order++));
+    filmOrderTimer = window.setTimeout(() => {
+      films.forEach((film, index) => film.style.setProperty('--order', index));
+    }, 3400);
+  }
   void galleryGrid.offsetWidth;
   galleryGrid.classList.add('is-appearing');
   galleryGrid.classList.remove('is-resetting');
@@ -1540,8 +1537,10 @@ function loadYouTubeAPI() {
     const timeout = window.setTimeout(() => finish(false), 7000);
     const previousReady = window.onYouTubeIframeAPIReady;
     window.onYouTubeIframeAPIReady = () => {
-      if (typeof previousReady === 'function') previousReady();
       finish(Boolean(window.YT?.Player));
+      if (typeof previousReady === 'function') {
+        try { previousReady(); } catch (error) { /* Another script's callback must not block this player. */ }
+      }
     };
     const script = document.createElement('script');
     script.src = 'https://www.youtube.com/iframe_api';
@@ -1568,8 +1567,13 @@ function clearLaunchImage() {
   launchImage = null;
 }
 
+function setLoadingVisible(visible) {
+  loadingIndicator.classList.toggle('is-visible', visible);
+  loadingIndicator.setAttribute('aria-hidden', String(!visible));
+}
+
 function launchThumbnail(film) {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return Promise.resolve();
   const image = film.querySelector('img');
   const card = image.getBoundingClientRect();
   const frame = playerFrame.getBoundingClientRect();
@@ -1584,112 +1588,75 @@ function launchThumbnail(film) {
   Object.assign(clone.style, {left:`${card.left}px`,top:`${card.top}px`,width:`${card.width}px`,height:`${card.height}px`});
   document.body.append(clone);
   launchImage = clone;
-  launchCanFadeAt = performance.now() + 1200;
-  clone.animate([
-    {left:`${card.left}px`,top:`${card.top}px`,width:`${card.width}px`,height:`${card.height}px`},
-    {left:`${full.left}px`,top:`${full.top}px`,width:`${full.width}px`,height:`${full.height}px`}
+  const animation = clone.animate([
+    {left:`${card.left}px`,top:`${card.top}px`,width:`${card.width}px`,height:`${card.height}px`,opacity:1},
+    {left:`${full.left}px`,top:`${full.top}px`,width:`${full.width}px`,height:`${full.height}px`,opacity:0}
   ], {duration:LAUNCH_MS,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});
-}
-
-function fadeLaunchImage() {
-  if (!launchImage) return Promise.resolve();
-  const image = launchImage;
-  const fade = image.animate([{opacity:1},{opacity:0}], {duration:420,easing:'ease',fill:'forwards'});
-  return fade.finished.then(() => {
-    if (launchImage === image) clearLaunchImage();
+  return animation.finished.then(() => {
+    if (launchImage === clone) clearLaunchImage();
   }, () => {});
-}
-
-function returnThumbnail(film) {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
-  const image = film.querySelector('img');
-  const card = image.getBoundingClientRect();
-  const frame = playerFrame.getBoundingClientRect();
-  const ratio = Number(image.getAttribute('width')) / Number(image.getAttribute('height'));
-  const width = Math.min(frame.width, frame.height * ratio);
-  const height = width / ratio;
-  const full = {left:frame.left + (frame.width - width) / 2,top:frame.top + (frame.height - height) / 2,width,height};
-  const clone = image.cloneNode();
-  clone.className = 'launch-image';
-  clone.alt = '';
-  clone.setAttribute('aria-hidden', 'true');
-  Object.assign(clone.style, {left:`${full.left}px`,top:`${full.top}px`,width:`${full.width}px`,height:`${full.height}px`});
-  document.body.append(clone);
-  launchImage = clone;
-  clone.animate([
-    {left:`${full.left}px`,top:`${full.top}px`,width:`${full.width}px`,height:`${full.height}px`,opacity:0},
-    {left:`${full.left}px`,top:`${full.top}px`,width:`${full.width}px`,height:`${full.height}px`,opacity:1,offset:.22},
-    {left:`${card.left}px`,top:`${card.top}px`,width:`${card.width}px`,height:`${card.height}px`,opacity:1}
-  ], {duration:RETURN_MS,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});
-  return RETURN_MS;
 }
 
 function coverVideo(film) {
   clearLaunchImage();
   loadVersion++;
   revealScheduledVersion = 0;
-  playbackScheduledVersion = 0;
-  playbackRequestedVersion = 0;
+  frameReadyVersion = 0;
+  loadingPhaseDoneVersion = 0;
   activeFilm = film;
   videoPlayer.title = `${film.dataset.title} — APOKALIS`;
   playerStage.setAttribute('aria-label', `${film.dataset.title} video player`);
-  placeholderImage.src = film.querySelector('img').src;
-  placeholder.classList.add('is-visible');
-  loadingIndicator.classList.remove('is-visible');
-  loadingIndicator.setAttribute('aria-hidden', 'true');
+  loadingError.href = `https://www.youtube.com/watch?v=${film.dataset.video}`;
+  loadingIndicator.classList.remove('has-error');
+  loadingIndicator.setAttribute('aria-label', 'Loading video');
+  setLoadingVisible(false);
   videoPlayer.classList.remove('is-ready');
   window.clearTimeout(revealTimer);
   window.clearTimeout(readinessTimer);
-  window.clearTimeout(openingTimer);
-  window.clearTimeout(playTimer);
   return loadVersion;
 }
 
-function revealVideo(version) {
-  if (version !== loadVersion || revealScheduledVersion === version || !playerStage.classList.contains('is-open')) return;
-  revealScheduledVersion = version;
-  window.clearTimeout(readinessTimer);
+function showLoadedFrame(version) {
+  if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
   videoPlayer.classList.add('is-ready');
-  revealTimer = window.setTimeout(() => {
-    if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-    loadingIndicator.classList.remove('is-visible');
-    loadingIndicator.setAttribute('aria-hidden', 'true');
-  }, 260);
+  loadingIndicator.classList.remove('has-error');
+  setLoadingVisible(false);
+  requestPlayback(version);
+}
+
+function maybeShowFrame(version) {
+  if (version !== loadVersion || frameReadyVersion !== version || loadingPhaseDoneVersion !== version || revealScheduledVersion === version) return;
+  revealScheduledVersion = version;
+  const delay = Math.max(0, loaderVisibleAt + 350 - performance.now());
+  revealTimer = window.setTimeout(() => showLoadedFrame(version), delay);
+}
+
+function markFrameReady(version) {
+  if (version !== loadVersion) return;
+  frameReadyVersion = version;
+  window.clearTimeout(readinessTimer);
+  commitMusicHistory(version);
+  maybeShowFrame(version);
 }
 
 function requestPlayback(version) {
   if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-  playbackRequestedVersion = version;
   if (youtubeReady && youtubePlayer) {
-    youtubePlayer.playVideo();
-  } else if (fallbackMode) {
-    videoPlayer.addEventListener('load', () => {
-      if (version === loadVersion) revealVideo(version);
-    }, {once:true});
-    videoPlayer.src = embedUrl(activeFilm, false, true);
+    try { youtubePlayer.playVideo(); } catch (error) { /* The player may have been torn down. */ }
   }
-  armReadinessTimeout(version);
-}
-
-function startLoadingPhase(version) {
-  if (version !== loadVersion || playbackScheduledVersion === version || !playerStage.classList.contains('is-open')) return;
-  playbackScheduledVersion = version;
-  const delay = Math.max(0, launchImage ? launchCanFadeAt - performance.now() : 0);
-  openingTimer = window.setTimeout(async () => {
-    if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-    loadingIndicator.classList.add('is-visible');
-    loadingIndicator.setAttribute('aria-hidden', 'false');
-    placeholder.classList.remove('is-visible');
-    if (launchImage) await fadeLaunchImage();
-    else await new Promise(resolve => window.setTimeout(resolve, 320));
-    if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-    playTimer = window.setTimeout(() => requestPlayback(version), 1000);
-  }, delay);
 }
 
 function armReadinessTimeout(version) {
   window.clearTimeout(readinessTimer);
-  readinessTimer = window.setTimeout(() => revealVideo(version), 8000);
+  readinessTimer = window.setTimeout(() => {
+    if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
+    if (fallbackMode) {
+      loadingIndicator.classList.add('has-error');
+      loadingIndicator.setAttribute('aria-label', 'Video could not be loaded');
+    } else {
+      loadFallback(activeFilm, version);
+    }
+  }, 8000);
 }
 
 function playerHasCurrentVideo(player) {
@@ -1703,32 +1670,44 @@ function playerHasCurrentVideo(player) {
 }
 
 function loadFallback(film, version) {
-  resetVideoIframe();
+  if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
+  frameReadyVersion = 0;
+  revealScheduledVersion = 0;
+  window.clearTimeout(revealTimer);
+  setLoadingVisible(true);
+  replaceVideoIframe(embedUrl(film, false, true), () => markFrameReady(version));
   fallbackMode = true;
+  loadingIndicator.setAttribute('aria-label', 'Loading video');
   videoPlayer.title = `${film.dataset.title} — APOKALIS`;
-  startLoadingPhase(version);
+  armReadinessTimeout(version);
 }
 
 function createYouTubePlayer(film) {
-  const initialId = film.dataset.video;
-  fallbackMode = false;
-  videoPlayer.src = embedUrl(film, true);
+  replaceVideoIframe(embedUrl(film, true));
+  videoPlayer.title = `${film.dataset.title} — APOKALIS`;
   try {
     youtubePlayer = new YT.Player(videoPlayer, {events:{
       onReady(event) {
-        if (!playerStage.classList.contains('is-open')) return;
-        youtubeReady = true;
-        if (window.matchMedia('(pointer:coarse)').matches) event.target.mute();
-        if (activeFilm.dataset.video !== initialId) event.target.cueVideoById(activeFilm.dataset.video);
-        startLoadingPhase(loadVersion);
+        queueMicrotask(() => {
+          if (!playerStage.classList.contains('is-open') || event.target !== youtubePlayer) return;
+          youtubeReady = true;
+          try {
+            if (window.matchMedia('(pointer:coarse)').matches) event.target.mute();
+            event.target.cueVideoById(activeFilm.dataset.video);
+            armReadinessTimeout(loadVersion);
+          } catch (error) {
+            loadFallback(activeFilm, loadVersion);
+          }
+        });
       },
       onStateChange(event) {
-        if (event.data !== YT.PlayerState.PLAYING || playbackRequestedVersion !== loadVersion || !activeFilm) return;
-        if (playerHasCurrentVideo(event.target)) revealVideo(loadVersion);
+        if (event.target === youtubePlayer && event.data === YT.PlayerState.CUED && playerHasCurrentVideo(event.target)) markFrameReady(loadVersion);
       },
-      onAutoplayBlocked(event) { if (playbackRequestedVersion === loadVersion && playerHasCurrentVideo(event.target)) revealVideo(loadVersion); },
-      onError(event) { if (playbackRequestedVersion === loadVersion && playerHasCurrentVideo(event.target)) revealVideo(loadVersion); }
+      onError(event) {
+        if (event.target === youtubePlayer) loadFallback(activeFilm, loadVersion);
+      }
     }});
+    armReadinessTimeout(loadVersion);
   } catch (error) {
     youtubePlayer = null;
     youtubeReady = false;
@@ -1740,8 +1719,12 @@ function loadVideo(film) {
   document.title = `${film.dataset.title} — APOKALIS`;
   const version = coverVideo(film);
   if (youtubeReady && youtubePlayer) {
-    youtubePlayer.cueVideoById(film.dataset.video);
-    startLoadingPhase(version);
+    try {
+      youtubePlayer.cueVideoById(film.dataset.video);
+      armReadinessTimeout(version);
+    } catch (error) {
+      loadFallback(film, version);
+    }
     return;
   }
   if (youtubePlayer) return;
@@ -1759,31 +1742,75 @@ function loadVideo(film) {
   });
 }
 
-function resetVideoIframe() {
-  if (youtubePlayer) {
-    try { youtubePlayer.destroy(); } catch (error) { /* The hidden iframe is removed below. */ }
-  }
+function createVideoIframe(src = null) {
+  const iframe = document.createElement('iframe');
+  iframe.id = 'video-player';
+  iframe.title = 'APOKALIS video';
+  iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+  iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+  iframe.allowFullscreen = true;
+  if (src) iframe.src = src;
+  return iframe;
+}
+
+function replaceVideoIframe(src = null, onLoad = null) {
+  const oldPlayer = youtubePlayer;
   youtubePlayer = null;
   youtubeReady = false;
   playerStarting = false;
   fallbackMode = false;
+  if (oldPlayer) {
+    try { oldPlayer.destroy(); } catch (error) { /* The hidden iframe is removed below. */ }
+  }
   videoPlayer.remove();
-  videoPlayer = document.createElement('iframe');
-  videoPlayer.id = 'video-player';
-  videoPlayer.title = 'APOKALIS video';
-  videoPlayer.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
-  videoPlayer.referrerPolicy = 'strict-origin-when-cross-origin';
-  videoPlayer.allowFullscreen = true;
-  playerFrame.insertBefore(videoPlayer, placeholder);
+  videoPlayer = createVideoIframe(src);
+  if (onLoad) videoPlayer.addEventListener('load', onLoad, {once:true});
+  playerFrame.insertBefore(videoPlayer, loadingIndicator);
 }
 
-function openVideo(film, event) {
-  window.clearTimeout(closeTimer);
+function filmFromURL() {
+  const params = new URL(location.href).searchParams;
+  return filmsBySlug.get(params.get('music') || params.get('video')) || null;
+}
+
+function musicURL(film) {
+  const url = new URL(location.href);
+  url.searchParams.delete('video');
+  if (film) url.searchParams.set('music', film.dataset.slug);
+  else url.searchParams.delete('music');
+  return url;
+}
+
+function updateMusicURL(film, method) {
+  const url = musicURL(film);
+  const state = method === 'pushState' ? {apokalisMusic:film.dataset.slug, apokalisFromGallery:true} : history.state;
+  history[method](state, '', url);
+}
+
+function commitMusicHistory(version) {
+  if (version !== pendingHistoryVersion || !activeFilm) return;
+  const mode = pendingHistoryMode;
+  pendingHistoryMode = 'none';
+  if (mode === 'push') {
+    updateMusicURL(activeFilm, 'pushState');
+  } else if (mode === 'direct') {
+    const linkedURL = musicURL(activeFilm);
+    history.replaceState({apokalisGallery:true}, '', musicURL(null));
+    history.pushState({apokalisMusic:activeFilm.dataset.slug, apokalisFromGallery:true}, '', linkedURL);
+  }
+}
+
+function openVideo(film, event = null, {historyMode = 'push', animateThumbnail = true} = {}) {
+  if (playerStage.classList.contains('is-open')) return;
   window.clearTimeout(unloadTimer);
   lastSelectedFilm = film;
-  openedWithKeyboard = event.detail === 0;
+  openedWithKeyboard = event?.detail === 0;
+  pendingHistoryVersion = loadVersion + 1;
+  pendingHistoryMode = historyMode;
+  playerStage.classList.remove('is-closing');
   playerStage.classList.add('is-open');
   playerStage.setAttribute('aria-hidden', 'false');
+  galleryGrid.classList.add('is-leaving');
   document.body.classList.add('player-active');
   logo.setAttribute('role', 'button');
   logo.setAttribute('aria-label', 'Close video and see all videos');
@@ -1791,48 +1818,77 @@ function openVideo(film, event) {
   gallery.inert = true;
   document.body.style.overflow = 'hidden';
   loadVideo(film);
-  launchThumbnail(film);
-  requestAnimationFrame(() => {
-    if (playerStage.classList.contains('is-open')) playerStage.classList.add('is-revealed');
+  const version = loadVersion;
+  setLoadingVisible(true);
+  loaderVisibleAt = performance.now();
+  (animateThumbnail ? launchThumbnail(film) : Promise.resolve()).then(() => {
+    if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
+    loadingPhaseDoneVersion = version;
+    maybeShowFrame(version);
   });
-  if (openedWithKeyboard) closePlayerButton.focus({preventScroll:true});
+  if (openedWithKeyboard) logo.focus({preventScroll:true});
 }
 
-function closeVideo() {
+function closeVideo(updateUrl = true) {
   if (!playerStage.classList.contains('is-open')) return;
+  pendingHistoryMode = 'none';
+  if (updateUrl) updateMusicURL(null, 'replaceState');
   document.title = 'APOKALIS';
+  document.body.classList.add('logo-settling', 'logo-settled', 'gallery-revealed', 'intro-complete');
   activeFilm.scrollIntoView({block:'center',behavior:'auto'});
-  coverVideo(activeFilm);
-  playerStage.classList.remove('is-open', 'is-revealed');
+  clearLaunchImage();
+  loadVersion++;
+  window.clearTimeout(revealTimer);
+  window.clearTimeout(readinessTimer);
+  videoPlayer.classList.remove('is-ready');
+  loadingIndicator.classList.remove('has-error');
+  setLoadingVisible(false);
+  playerStage.classList.add('is-closing');
+  playerStage.classList.remove('is-open');
+  playerStage.setAttribute('aria-hidden', 'true');
   playerStarting = false;
-  if (youtubeReady && youtubePlayer) youtubePlayer.stopVideo();
+  if (youtubeReady && youtubePlayer) {
+    try { youtubePlayer.stopVideo(); } catch (error) { /* The iframe is removed after the gallery returns. */ }
+  }
   document.body.classList.remove('player-active');
   logo.setAttribute('role', 'img');
   logo.setAttribute('aria-label', 'APOKALIS');
   logo.removeAttribute('tabindex');
   logo.blur();
-  closePlayerButton.blur();
   showFilms(activeFilm);
+  gallery.inert = false;
+  document.body.style.overflow = '';
+  if (openedWithKeyboard) lastSelectedFilm?.focus({preventScroll:true});
   window.clearTimeout(unloadTimer);
-  unloadTimer = window.setTimeout(resetVideoIframe, 150);
-  window.clearTimeout(closeTimer);
-  closeTimer = window.setTimeout(() => {
-    placeholder.classList.remove('is-visible');
-    playerStage.setAttribute('aria-hidden', 'true');
-    gallery.inert = false;
-    document.body.style.overflow = '';
-    if (openedWithKeyboard) lastSelectedFilm?.focus({preventScroll:true});
-  }, 850);
+  unloadTimer = window.setTimeout(() => replaceVideoIframe(), 150);
+}
+
+function returnToGallery() {
+  if (!playerStage.classList.contains('is-open')) return;
+  if (history.state?.apokalisFromGallery && history.state.apokalisMusic === activeFilm.dataset.slug) {
+    closeVideo(false);
+    history.back();
+  } else {
+    closeVideo();
+  }
 }
 
 function startIntroSequence() {
+  const linkedFilm = filmFromURL();
+  if (linkedFilm && new URL(location.href).searchParams.has('video')) {
+    history.replaceState(history.state, '', musicURL(linkedFilm));
+  } else if (!linkedFilm) {
+    history.replaceState({apokalisGallery:true}, '', musicURL(null));
+  }
   window.setTimeout(() => {
     document.body.classList.add('logo-settling', 'logo-settled', 'gallery-revealed');
     showFilms();
     window.setTimeout(() => {
       document.body.classList.add('intro-complete');
       gallery.inert = false;
-    }, 1500);
+      const currentLinkedFilm = filmFromURL();
+      if (currentLinkedFilm) openVideo(currentLinkedFilm, null, {historyMode:'direct', animateThumbnail:false});
+    }, 1200);
     window.setTimeout(() => window.stopLogoAnimation?.(), 7200);
   }, INTRO_HOLD_MS);
 }
@@ -1841,44 +1897,25 @@ films.forEach((film, index) => {
   film.style.setProperty('--order', index);
   film.addEventListener('click', event => openVideo(film, event));
 });
-function moveVideo(direction) {
-  if (!playerStage.classList.contains('is-open')) return;
-  const index = films.indexOf(activeFilm);
-  const next = (index + direction + films.length) % films.length;
-  loadVideo(films[next]);
-  lastSelectedFilm = films[next];
-}
-let swipeStart = null;
-function onTouchStart(event) {
-  if (event.touches.length !== 1) return;
-  swipeStart = {x:event.touches[0].clientX,y:event.touches[0].clientY};
-}
-function onTouchEnd(event) {
-  if (!swipeStart || !event.changedTouches.length) return;
-  const dx = event.changedTouches[0].clientX - swipeStart.x;
-  const dy = event.changedTouches[0].clientY - swipeStart.y;
-  swipeStart = null;
-  if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.3) moveVideo(dx < 0 ? 1 : -1);
-}
-playerStage.querySelectorAll('.player-bar, .swipe-edge, .video-placeholder').forEach(area => {
-  area.addEventListener('touchstart', onTouchStart, {passive:true});
-  area.addEventListener('touchend', onTouchEnd, {passive:true});
-});
 scheduleMasonry();
 window.addEventListener('resize', scheduleMasonry, { passive:true });
-closePlayerButton.addEventListener('click', closeVideo);
-logo.addEventListener('click', () => { if (playerStage.classList.contains('is-open')) closeVideo(); });
+logo.addEventListener('click', returnToGallery);
 logo.addEventListener('keydown', event => {
   if (playerStage.classList.contains('is-open') && (event.key === 'Enter' || event.key === ' ')) {
     event.preventDefault();
-    closeVideo();
+    returnToGallery();
   }
 });
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') closeVideo();
-  if (event.key === 'Tab' && playerStage.classList.contains('is-open') && document.activeElement === closePlayerButton && event.shiftKey) {
-    event.preventDefault();
-    closePlayerButton.focus();
+window.addEventListener('popstate', () => {
+  const linkedFilm = filmFromURL();
+  if (linkedFilm) {
+    if (playerStage.classList.contains('is-open') && activeFilm === linkedFilm) return;
+    if (playerStage.classList.contains('is-open')) closeVideo(false);
+    if (document.body.classList.contains('intro-complete')) {
+      openVideo(linkedFilm, null, {historyMode:'none', animateThumbnail:false});
+    }
+  } else if (playerStage.classList.contains('is-open')) {
+    closeVideo(false);
   }
 });
 window.addEventListener('load', startIntroSequence, { once:true });
