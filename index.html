@@ -1881,13 +1881,18 @@ function startIntroSequence() {
     history.replaceState({apokalisGallery:true}, '', musicURL(null));
   }
   window.setTimeout(() => {
+    const currentLinkedFilm = filmFromURL();
+    if (currentLinkedFilm) {
+      document.body.classList.add('logo-settled', 'intro-complete');
+      openVideo(currentLinkedFilm, null, {historyMode:'direct', animateThumbnail:false});
+      window.setTimeout(() => window.stopLogoAnimation?.(), 7200);
+      return;
+    }
     document.body.classList.add('logo-settling', 'logo-settled', 'gallery-revealed');
     showFilms();
     window.setTimeout(() => {
       document.body.classList.add('intro-complete');
       gallery.inert = false;
-      const currentLinkedFilm = filmFromURL();
-      if (currentLinkedFilm) openVideo(currentLinkedFilm, null, {historyMode:'direct', animateThumbnail:false});
     }, 1200);
     window.setTimeout(() => window.stopLogoAnimation?.(), 7200);
   }, INTRO_HOLD_MS);
