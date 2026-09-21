@@ -101,7 +101,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 #player-stage.is-closing{visibility:hidden;opacity:0;pointer-events:none;transition:none}
 .player-bar{position:relative;flex:none;height:72px;background:#000}
 .release-links{position:absolute;z-index:1;top:50%;right:clamp(16px,3.5vw,54px);display:flex;gap:7px;transform:translate(-8px,-50%);opacity:0;pointer-events:none;transition:opacity .35s ease,transform .5s cubic-bezier(.2,.7,.2,1)}
-#player-stage.is-open .release-links{transform:translate(0,-50%);opacity:1;pointer-events:auto;transition-delay:.35s}
+.release-links.is-visible{transform:translate(0,-50%);opacity:1;pointer-events:auto}
 .release-link{display:grid;width:34px;height:34px;place-items:center;color:#fff;opacity:.62;text-decoration:none;transition:opacity .3s ease,transform .3s ease;-webkit-tap-highlight-color:transparent}
 .release-link svg{display:block;width:20px;height:20px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .release-link:hover{opacity:1;transform:scale(1.07)}
@@ -1514,6 +1514,7 @@ let masonryFrame = null;
 let unloadTimer = null;
 let revealTimer = null;
 let readinessTimer = null;
+let releaseLinksTimer = null;
 let filmOrderTimer = null;
 let loadVersion = 0;
 let revealScheduledVersion = 0;
@@ -1528,8 +1529,10 @@ let apiPromise = null;
 let launchImage = null;
 let pendingHistoryVersion = 0;
 let pendingHistoryMode = 'none';
+let releaseLinksScheduledVersion = 0;
 const INTRO_HOLD_MS = 4000;
 const LAUNCH_MS = 850;
+const RELEASE_LINK_DELAY_MS = 4000;
 
 function layoutMasonry() {
   masonryFrame = null;
@@ -1557,6 +1560,23 @@ function updateReleaseLinks(film) {
   Object.entries(destinations).forEach(([service, href]) => {
     releaseAnchors[service].href = href;
   });
+}
+
+function resetReleaseLinks() {
+  window.clearTimeout(releaseLinksTimer);
+  releaseLinksTimer = null;
+  releaseLinksScheduledVersion = 0;
+  releaseLinks.classList.remove('is-visible');
+}
+
+function scheduleReleaseLinks(version) {
+  if (version !== loadVersion || releaseLinksScheduledVersion === version) return;
+  releaseLinksScheduledVersion = version;
+  releaseLinksTimer = window.setTimeout(() => {
+    if (version === loadVersion && playerStage.classList.contains('is-open')) {
+      releaseLinks.classList.add('is-visible');
+    }
+  }, RELEASE_LINK_DELAY_MS);
 }
 
 function showFilms(returningFilm = null) {
@@ -1651,6 +1671,7 @@ function launchThumbnail(film) {
 
 function coverVideo(film) {
   clearLaunchImage();
+  resetReleaseLinks();
   loadVersion++;
   revealScheduledVersion = 0;
   frameReadyVersion = 0;
@@ -1674,6 +1695,7 @@ function showLoadedFrame(version) {
   loadingIndicator.classList.remove('has-error');
   setLoadingVisible(false);
   requestPlayback(version);
+  if (fallbackMode) scheduleReleaseLinks(version);
 }
 
 function maybeShowFrame(version) {
@@ -1764,6 +1786,9 @@ function createYouTubePlayer(film) {
         if (event.target === youtubePlayer && event.data === YT.PlayerState.CUED && playerHasCurrentVideo(event.target)) {
           disableCaptions(event.target);
           markFrameReady(loadVersion);
+        }
+        if (event.target === youtubePlayer && event.data === YT.PlayerState.PLAYING && playerHasCurrentVideo(event.target)) {
+          scheduleReleaseLinks(loadVersion);
         }
       },
       onError(event) {
@@ -1902,6 +1927,7 @@ function closeVideo(updateUrl = true) {
   document.body.classList.add('logo-settling', 'logo-settled', 'gallery-revealed', 'intro-complete');
   activeFilm.scrollIntoView({block:'center',behavior:'auto'});
   clearLaunchImage();
+  resetReleaseLinks();
   loadVersion++;
   window.clearTimeout(revealTimer);
   window.clearTimeout(readinessTimer);
