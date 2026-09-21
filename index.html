@@ -99,7 +99,13 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 #player-stage{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;background:#000;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .5s ease,visibility 0s linear .5s}
 #player-stage.is-open{visibility:visible;opacity:1;pointer-events:auto;transition-delay:0s}
 #player-stage.is-closing{visibility:hidden;opacity:0;pointer-events:none;transition:none}
-.player-bar{flex:none;height:72px;background:#000}
+.player-bar{position:relative;flex:none;height:72px;background:#000}
+.release-links{position:absolute;z-index:1;top:50%;right:clamp(16px,3.5vw,54px);display:flex;gap:7px;transform:translate(-8px,-50%);opacity:0;pointer-events:none;transition:opacity .35s ease,transform .5s cubic-bezier(.2,.7,.2,1)}
+#player-stage.is-open .release-links{transform:translate(0,-50%);opacity:1;pointer-events:auto;transition-delay:.35s}
+.release-link{display:grid;width:34px;height:34px;place-items:center;color:#fff;opacity:.62;text-decoration:none;transition:opacity .3s ease,transform .3s ease;-webkit-tap-highlight-color:transparent}
+.release-link svg{display:block;width:20px;height:20px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.release-link:hover{opacity:1;transform:scale(1.07)}
+.release-link:focus-visible{outline:1px solid #fff;outline-offset:1px;opacity:1}
 .player-frame{position:relative;flex:1;min-height:0;overflow:hidden}
 #video-player{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .25s ease}
 #video-player.is-ready{visibility:visible;opacity:1;pointer-events:auto}
@@ -115,9 +121,9 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 @media(min-width:1700px){.gallery-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
 @media(max-width:1200px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}}
+@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}.release-links{right:8px;gap:3px}.release-link{width:32px;height:32px}.release-link svg{width:19px;height:19px}}
 @media(max-width:380px){.gallery-grid{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner{animation:none!important}}
+@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator,.release-links,.release-link{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner{animation:none!important}}
 </style>
 </head>
 <body>
@@ -136,7 +142,13 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
   </div>
 </main>
 <div id="player-stage" role="region" aria-label="Video player" aria-hidden="true">
-  <div class="player-bar" aria-hidden="true"></div>
+  <div class="player-bar">
+    <nav class="release-links" id="release-links" aria-label="Listen to this release">
+      <a class="release-link" data-service="apple" target="_blank" rel="noopener noreferrer" aria-label="Listen on Apple Music" title="Apple Music"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V7.4l9-1.9v9.8"/><path d="M9 9.8l9-1.9"/><ellipse cx="6.8" cy="17.8" rx="2.2" ry="1.7"/><ellipse cx="15.8" cy="15.6" rx="2.2" ry="1.7"/></svg></a>
+      <a class="release-link" data-service="spotify" target="_blank" rel="noopener noreferrer" aria-label="Listen on Spotify" title="Spotify"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.3 9.3c3.5-1 7.3-.7 10.3 1"/><path d="M8 12.4c2.9-.8 6.2-.5 8.8.8"/><path d="M8.8 15.3c2.3-.6 4.8-.3 6.8.7"/></svg></a>
+      <a class="release-link" data-service="instagram" target="_blank" rel="noopener noreferrer" aria-label="View on Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.6" cy="6.8" r=".7" fill="currentColor" stroke="none"/></svg></a>
+    </nav>
+  </div>
   <div class="player-frame"><iframe id="video-player" title="APOKALIS video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="loading-indicator" id="loading-indicator" role="status" aria-label="Loading video" aria-hidden="true"><span class="loading-spinner"></span><a class="loading-error" id="loading-error" target="_blank" rel="noopener noreferrer">Open on YouTube</a></div></div>
 </div>
 <div id="logo-wrap" role="img" aria-label="APOKALIS"><canvas id="gl"></canvas>
@@ -1462,8 +1474,47 @@ const playerFrame = playerStage.querySelector('.player-frame');
 const logo = document.getElementById('logo-wrap');
 const loadingIndicator = document.getElementById('loading-indicator');
 const loadingError = document.getElementById('loading-error');
+const releaseLinks = document.getElementById('release-links');
+const releaseAnchors = Object.fromEntries([...releaseLinks.querySelectorAll('[data-service]')].map(link => [link.dataset.service, link]));
 const films = [...galleryGrid.querySelectorAll('.film')];
 const filmsBySlug = new Map(films.map(film => [film.dataset.slug, film]));
+const releases = {
+  spiralbound: {
+    apple:'https://music.apple.com/au/album/spiralbound/6793890953?i=6793890954',
+    spotify:'https://open.spotify.com/track/6xR82f73BPguEFnBIKiUMd?si=677f5c39bde94b88',
+    instagram:'https://www.instagram.com/p/DbApibZxYdD/'
+  },
+  unbound: {
+    apple:'https://music.apple.com/au/album/unbound/6800780379?i=6800780380',
+    spotify:'https://open.spotify.com/track/7FpYi2DxZQghXX9Z4RJ3pk?si=8d9799bf76e64d21',
+    instagram:'https://www.instagram.com/p/Db5L5KtxGgq/'
+  },
+  '27': {
+    apple:'https://music.apple.com/au/album/27/6801953503?i=6801953504',
+    spotify:'https://open.spotify.com/track/0zbulFWBeaTwJmNM2tZdOJ?si=ff988d638322485a',
+    instagram:'https://www.instagram.com/p/DcFe4IxxEl2/'
+  },
+  't-r-a-u-m': {
+    apple:'https://music.apple.com/au/album/t-r-a-u-m/6804362425?i=6804362426',
+    spotify:'https://open.spotify.com/track/5Z7p3Aw5zoD4p6Pa2rGtMy?si=0dbce4ac1e254508',
+    instagram:'https://www.instagram.com/p/DcXozdPRxyo/'
+  },
+  ssababa: {
+    apple:'https://music.apple.com/au/album/ssababa/6806698232?i=6806698233',
+    spotify:'https://open.spotify.com/track/0Z7D5HZbLzrzBvxb0WEsHL?si=7482385304a44f7f',
+    instagram:'https://www.instagram.com/p/DcnyHbrR8n4/'
+  },
+  asasuzume: {
+    apple:'https://music.apple.com/au/album/asasuzume/6809802373?i=6809802374',
+    spotify:'https://open.spotify.com/track/1xz3MALUN5g6ohiuoOhA6V?si=1c715f794b1348fd',
+    instagram:'https://www.instagram.com/p/DdC1o2hvtnH/'
+  },
+  'ti-ricordi': {
+    apple:'https://music.apple.com/au/album/ti-ricordi/6811728269?i=6811728270',
+    spotify:'https://open.spotify.com/track/4bKUu3XxCmA7yxh0J20IAc?si=7qUrFt_FQxOm_qFmktziVQ&utm_source=copy-link',
+    instagram:'https://www.instagram.com/p/DdNiIEbT5VV/'
+  }
+};
 let lastSelectedFilm = null;
 let activeFilm = null;
 let openedWithKeyboard = false;
@@ -1505,6 +1556,15 @@ function layoutMasonry() {
 function scheduleMasonry() {
   if (masonryFrame !== null) cancelAnimationFrame(masonryFrame);
   masonryFrame = requestAnimationFrame(layoutMasonry);
+}
+
+function updateReleaseLinks(film) {
+  const destinations = releases[film.dataset.slug];
+  if (!destinations) return;
+  releaseLinks.setAttribute('aria-label', `Listen to ${film.dataset.title}`);
+  Object.entries(destinations).forEach(([service, href]) => {
+    releaseAnchors[service].href = href;
+  });
 }
 
 function showFilms(returningFilm = null) {
@@ -1807,6 +1867,7 @@ function openVideo(film, event = null, {historyMode = 'push', animateThumbnail =
   openedWithKeyboard = event?.detail === 0;
   pendingHistoryVersion = loadVersion + 1;
   pendingHistoryMode = historyMode;
+  updateReleaseLinks(film);
   playerStage.classList.remove('is-closing');
   playerStage.classList.add('is-open');
   playerStage.setAttribute('aria-hidden', 'false');
