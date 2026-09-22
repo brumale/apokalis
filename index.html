@@ -1621,8 +1621,15 @@ function startPlayback() {
   }
 }
 
-function requiresManualPlay() {
-  return window.matchMedia('(pointer:coarse)').matches;
+function showPlayPrompt(version = loadVersion) {
+  if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
+  playRequested = false;
+  videoPlayer.classList.add('awaiting-play');
+  playButton.classList.add('is-visible');
+}
+
+function playerHasAudibleSound(player) {
+  try { return !player.isMuted() && player.getVolume() > 0; } catch (error) { return true; }
 }
 
 function clearCaptionResets() {
@@ -1757,7 +1764,7 @@ function coverVideo(film) {
 
 function showLoadedFrame(version) {
   if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-  const awaitingPlay = requiresManualPlay() && !playRequested;
+  const awaitingPlay = playButton.classList.contains('is-visible') && !playRequested;
   videoPlayer.classList.toggle('awaiting-play', awaitingPlay);
   videoPlayer.classList.add('is-ready');
   loadingIndicator.classList.remove('has-error');
@@ -1784,7 +1791,6 @@ function markFrameReady(version) {
 
 function requestPlayback(version) {
   if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-  if (requiresManualPlay() && !playRequested) return;
   if (youtubeReady && youtubePlayer) {
     try {
       if (playRequested) {
@@ -1826,7 +1832,8 @@ function loadFallback(film, version) {
   revealScheduledVersion = 0;
   window.clearTimeout(revealTimer);
   setLoadingVisible(true);
-  replaceVideoIframe(embedUrl(film, false, !requiresManualPlay() || playRequested), () => markFrameReady(version));
+  const awaitingPlay = playButton.classList.contains('is-visible') && !playRequested;
+  replaceVideoIframe(embedUrl(film, false, !awaitingPlay), () => markFrameReady(version));
   fallbackMode = true;
   loadingIndicator.setAttribute('aria-label', 'Loading video');
   videoPlayer.title = `${film.dataset.title} — APOKALIS`;
@@ -1868,8 +1875,18 @@ function createYouTubePlayer(film) {
               event.target.setVolume(100);
             } catch (error) { /* Playback has already started. */ }
           }
+          if (!playerHasAudibleSound(event.target)) {
+            try { event.target.pauseVideo(); } catch (error) { /* The prompt still prevents silent playback. */ }
+            showPlayPrompt(loadVersion);
+            return;
+          }
+          videoPlayer.classList.remove('awaiting-play');
+          playButton.classList.remove('is-visible');
           scheduleReleaseLinks(loadVersion);
         }
+      },
+      onAutoplayBlocked(event) {
+        if (event.target === youtubePlayer) showPlayPrompt(loadVersion);
       },
       onError(event) {
         if (event.target === youtubePlayer) loadFallback(activeFilm, loadVersion);
