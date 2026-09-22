@@ -109,15 +109,17 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .player-frame{position:relative;flex:1;min-height:0;overflow:hidden}
 #video-player{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;visibility:hidden;opacity:0;filter:brightness(1);pointer-events:none;transition:opacity 1s ease,filter 1s ease}
 #video-player.is-ready{visibility:visible;opacity:1;pointer-events:auto}
-#video-player.is-ready.awaiting-sound{opacity:.42;filter:brightness(.48)}
-.sound-button{position:absolute;z-index:3;top:50%;left:50%;display:flex;align-items:center;gap:12px;padding:15px 22px;border:1px solid rgba(255,255,255,.68);border-radius:999px;background:rgba(0,0,0,.72);color:#fff;font:inherit;font-size:13px;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap;transform:translate(-50%,-42%) scale(.96);opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;box-shadow:0 10px 35px rgba(0,0,0,.32);backdrop-filter:blur(8px);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1),border-color .3s ease,background-color .3s ease;-webkit-tap-highlight-color:transparent}
-.sound-button.is-visible{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible;pointer-events:auto}
-.sound-button:hover,.sound-button:focus-visible{border-color:#fff;background:rgba(12,12,12,.88);outline:none}
-.sound-button:disabled{cursor:default}
-.sound-icon{display:block;width:30px;height:24px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.sound-wave{transform-origin:12px 12px;animation:sound-wave 1.8s ease-in-out infinite}
-.sound-wave:last-child{animation-delay:.25s}
-@keyframes sound-wave{0%,100%{opacity:.25;transform:scale(.88)}50%{opacity:1;transform:scale(1)}}
+#video-player.is-ready.awaiting-play{opacity:.78;filter:brightness(.82);pointer-events:none}
+.play-button{position:absolute;z-index:3;inset:0;display:grid;width:100%;height:100%;padding:0;border:0;background:transparent;color:#fff;font:inherit;opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;place-items:center;-webkit-tap-highlight-color:transparent}
+.play-button.is-visible{opacity:1;visibility:visible;pointer-events:auto}
+.play-pill{display:flex;align-items:center;gap:12px;padding:17px 27px;border:1px solid rgba(255,255,255,.68);border-radius:999px;background:rgba(0,0,0,.72);font-size:14px;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap;transform:translateY(8%) scale(.96);box-shadow:0 10px 35px rgba(0,0,0,.32);backdrop-filter:blur(8px);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1),border-color .3s ease,background-color .3s ease}
+.play-button.is-visible .play-pill{transform:translateY(0) scale(1)}
+.play-button:hover .play-pill,.play-button:focus-visible .play-pill{border-color:#fff;background:rgba(12,12,12,.88)}
+.play-button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:-3px}
+.play-icon{display:block;width:29px;height:29px;overflow:visible}
+.play-ring{fill:none;stroke:currentColor;stroke-width:1.25;transform-origin:14px 14px;animation:play-pulse 1.9s ease-in-out infinite}
+.play-triangle{fill:currentColor}
+@keyframes play-pulse{0%,100%{opacity:.42;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
 .loading-indicator{position:absolute;inset:0;z-index:2;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
 .loading-indicator.is-visible{opacity:1}
 .loading-indicator.has-error{pointer-events:auto}
@@ -130,9 +132,9 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 @media(min-width:1700px){.gallery-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
 @media(max-width:1200px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}.sound-button{padding:14px 20px;font-size:12px}.release-links{right:8px;gap:3px}.release-link{width:32px;height:32px}.release-link svg{width:19px;height:19px}}
+@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}.play-pill{padding:16px 24px;font-size:13px}.release-links{right:8px;gap:3px}.release-link{width:32px;height:32px}.release-link svg{width:19px;height:19px}}
 @media(max-width:380px){.gallery-grid{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator,.sound-button,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner,.sound-wave{animation:none!important}}
+@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator,.play-button,.play-pill,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner,.play-ring{animation:none!important}}
 </style>
 </head>
 <body>
@@ -157,7 +159,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
       <a class="release-link" data-service="spotify" target="_blank" rel="noopener noreferrer" aria-label="Listen on Spotify" title="Spotify"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.3 9.3c3.5-1 7.3-.7 10.3 1"/><path d="M8 12.4c2.9-.8 6.2-.5 8.8.8"/><path d="M8.8 15.3c2.3-.6 4.8-.3 6.8.7"/></svg></a>
     </nav>
   </div>
-  <div class="player-frame"><iframe id="video-player" title="APOKALIS video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="loading-indicator" id="loading-indicator" role="status" aria-label="Loading video" aria-hidden="true"><span class="loading-spinner"></span><a class="loading-error" id="loading-error" target="_blank" rel="noopener noreferrer">Open on YouTube</a></div><button class="sound-button" id="sound-button" type="button"><svg class="sound-icon" viewBox="0 0 30 24" aria-hidden="true"><path d="M3.5 9h4l5-4v14l-5-4h-4z"/><path class="sound-wave" d="M17 8.2a5 5 0 0 1 0 7.6"/><path class="sound-wave" d="M21 5.2a9 9 0 0 1 0 13.6"/></svg><span>Enable sound</span></button></div>
+  <div class="player-frame"><iframe id="video-player" title="APOKALIS video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="loading-indicator" id="loading-indicator" role="status" aria-label="Loading video" aria-hidden="true"><span class="loading-spinner"></span><a class="loading-error" id="loading-error" target="_blank" rel="noopener noreferrer">Open on YouTube</a></div><button class="play-button" id="play-button" type="button" aria-label="Play video with sound"><span class="play-pill"><svg class="play-icon" viewBox="0 0 28 28" aria-hidden="true"><circle class="play-ring" cx="14" cy="14" r="11.5"/><path class="play-triangle" d="M11.5 9.4 19 14l-7.5 4.6z"/></svg><span>Play</span></span></button></div>
 </div>
 <div id="logo-wrap" role="img" aria-label="APOKALIS"><canvas id="gl"></canvas>
   <svg id="bevel" viewBox="0 0 4000 1155" aria-hidden="true">
@@ -1482,7 +1484,7 @@ const playerFrame = playerStage.querySelector('.player-frame');
 const logo = document.getElementById('logo-wrap');
 const loadingIndicator = document.getElementById('loading-indicator');
 const loadingError = document.getElementById('loading-error');
-const soundButton = document.getElementById('sound-button');
+const playButton = document.getElementById('play-button');
 const releaseLinks = document.getElementById('release-links');
 const releaseAnchors = Object.fromEntries([...releaseLinks.querySelectorAll('[data-service]')].map(link => [link.dataset.service, link]));
 const films = [...galleryGrid.querySelectorAll('.film')];
@@ -1542,7 +1544,7 @@ let pendingHistoryVersion = 0;
 let pendingHistoryMode = 'none';
 let releaseLinksScheduledVersion = 0;
 let captionsResetVersion = 0;
-let soundRequested = false;
+let playRequested = false;
 const INTRO_HOLD_MS = 4000;
 const LAUNCH_MS = 850;
 const RELEASE_LINK_DELAY_MS = 4000;
@@ -1592,20 +1594,20 @@ function scheduleReleaseLinks(version) {
   }, RELEASE_LINK_DELAY_MS);
 }
 
-function resetSoundPrompt() {
-  soundRequested = false;
-  soundButton.classList.remove('is-visible');
-  videoPlayer.classList.remove('awaiting-sound');
+function resetPlayPrompt() {
+  playRequested = false;
+  playButton.classList.remove('is-visible');
+  videoPlayer.classList.remove('awaiting-play');
 }
 
-function enableSound() {
-  soundRequested = true;
+function startPlayback() {
+  playRequested = true;
+  playButton.classList.remove('is-visible');
+  videoPlayer.classList.remove('awaiting-play');
   if (fallbackMode && activeFilm) {
     const version = loadVersion;
     videoPlayer.addEventListener('load', () => {
       if (version !== loadVersion) return;
-      videoPlayer.classList.remove('awaiting-sound');
-      soundButton.classList.remove('is-visible');
       scheduleReleaseLinks(version);
     }, {once:true});
     videoPlayer.src = embedUrl(activeFilm, false, true);
@@ -1620,7 +1622,7 @@ function enableSound() {
   }
 }
 
-function requiresSoundConsent() {
+function requiresManualPlay() {
   return window.matchMedia('(pointer:coarse)').matches;
 }
 
@@ -1689,7 +1691,6 @@ function loadYouTubeAPI() {
 
 function embedUrl(film, apiEnabled, autoplay = false) {
   const params = new URLSearchParams({autoplay:autoplay ? '1' : '0',playsinline:'1',controls:'1',rel:'0',cc_load_policy:'0'});
-  if (requiresSoundConsent() && !soundRequested) params.set('mute', '1');
   if (apiEnabled) {
     params.set('enablejsapi', '1');
     if (location.protocol === 'https:' || location.protocol === 'http:') params.set('origin', location.origin);
@@ -1749,7 +1750,7 @@ function coverVideo(film) {
   loadingIndicator.classList.remove('has-error');
   loadingIndicator.setAttribute('aria-label', 'Loading video');
   setLoadingVisible(false);
-  videoPlayer.classList.remove('is-ready', 'awaiting-sound');
+  videoPlayer.classList.remove('is-ready', 'awaiting-play');
   window.clearTimeout(revealTimer);
   window.clearTimeout(readinessTimer);
   return loadVersion;
@@ -1757,14 +1758,14 @@ function coverVideo(film) {
 
 function showLoadedFrame(version) {
   if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-  const awaitingSound = requiresSoundConsent() && !soundRequested;
-  videoPlayer.classList.toggle('awaiting-sound', awaitingSound);
+  const awaitingPlay = requiresManualPlay() && !playRequested;
+  videoPlayer.classList.toggle('awaiting-play', awaitingPlay);
   videoPlayer.classList.add('is-ready');
   loadingIndicator.classList.remove('has-error');
   setLoadingVisible(false);
-  soundButton.classList.toggle('is-visible', awaitingSound);
-  if (!awaitingSound) requestPlayback(version);
-  if (fallbackMode && !awaitingSound) scheduleReleaseLinks(version);
+  playButton.classList.toggle('is-visible', awaitingPlay);
+  if (!awaitingPlay) requestPlayback(version);
+  if (fallbackMode && !awaitingPlay) scheduleReleaseLinks(version);
 }
 
 function maybeShowFrame(version) {
@@ -1784,10 +1785,10 @@ function markFrameReady(version) {
 
 function requestPlayback(version) {
   if (version !== loadVersion || !playerStage.classList.contains('is-open')) return;
-  if (requiresSoundConsent() && !soundRequested) return;
+  if (requiresManualPlay() && !playRequested) return;
   if (youtubeReady && youtubePlayer) {
     try {
-      if (soundRequested) {
+      if (playRequested) {
         youtubePlayer.unMute();
         youtubePlayer.setVolume(100);
       }
@@ -1826,7 +1827,7 @@ function loadFallback(film, version) {
   revealScheduledVersion = 0;
   window.clearTimeout(revealTimer);
   setLoadingVisible(true);
-  replaceVideoIframe(embedUrl(film, false, !requiresSoundConsent() || soundRequested), () => markFrameReady(version));
+  replaceVideoIframe(embedUrl(film, false, !requiresManualPlay() || playRequested), () => markFrameReady(version));
   fallbackMode = true;
   loadingIndicator.setAttribute('aria-label', 'Loading video');
   videoPlayer.title = `${film.dataset.title} — APOKALIS`;
@@ -1843,11 +1844,9 @@ function createYouTubePlayer(film) {
           if (!playerStage.classList.contains('is-open') || event.target !== youtubePlayer) return;
           youtubeReady = true;
           try {
-            if (soundRequested) {
+            if (playRequested) {
               event.target.unMute();
               event.target.setVolume(100);
-            } else if (requiresSoundConsent()) {
-              event.target.mute();
             }
             event.target.cueVideoById(activeFilm.dataset.video);
             disableCaptions(event.target);
@@ -1864,12 +1863,12 @@ function createYouTubePlayer(film) {
         }
         if (event.target === youtubePlayer && event.data === YT.PlayerState.PLAYING && playerHasCurrentVideo(event.target)) {
           disableCaptionsOnStart(event.target, loadVersion);
-          try {
-            if (!event.target.isMuted()) {
-              videoPlayer.classList.remove('awaiting-sound');
-              soundButton.classList.remove('is-visible');
-            }
-          } catch (error) { /* The mute state may be unavailable briefly. */ }
+          if (playRequested) {
+            try {
+              event.target.unMute();
+              event.target.setVolume(100);
+            } catch (error) { /* Playback has already started. */ }
+          }
           scheduleReleaseLinks(loadVersion);
         }
       },
@@ -1978,7 +1977,7 @@ function openVideo(film, event = null, {historyMode = 'push', animateThumbnail =
   openedWithKeyboard = event?.detail === 0;
   pendingHistoryVersion = loadVersion + 1;
   pendingHistoryMode = historyMode;
-  resetSoundPrompt();
+  resetPlayPrompt();
   updateReleaseLinks(film);
   playerStage.classList.remove('is-closing');
   playerStage.classList.add('is-open');
@@ -2012,11 +2011,11 @@ function closeVideo(updateUrl = true) {
   clearLaunchImage();
   resetReleaseLinks();
   clearCaptionResets();
-  soundButton.classList.remove('is-visible');
+  playButton.classList.remove('is-visible');
   loadVersion++;
   window.clearTimeout(revealTimer);
   window.clearTimeout(readinessTimer);
-  videoPlayer.classList.remove('is-ready', 'awaiting-sound');
+  videoPlayer.classList.remove('is-ready', 'awaiting-play');
   loadingIndicator.classList.remove('has-error');
   setLoadingVisible(false);
   playerStage.classList.add('is-closing');
@@ -2078,7 +2077,7 @@ films.forEach((film, index) => {
   film.style.setProperty('--order', index);
   film.addEventListener('click', event => openVideo(film, event));
 });
-soundButton.addEventListener('click', enableSound);
+playButton.addEventListener('click', startPlayback);
 scheduleMasonry();
 window.addEventListener('resize', scheduleMasonry, { passive:true });
 logo.addEventListener('click', returnToGallery);
