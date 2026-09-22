@@ -112,14 +112,13 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 #video-player.is-ready.awaiting-play{opacity:.78;filter:brightness(.82);pointer-events:none}
 .play-button{position:absolute;z-index:3;inset:0;display:grid;width:100%;height:100%;padding:0;border:0;background:transparent;color:#fff;font:inherit;opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;place-items:center;-webkit-tap-highlight-color:transparent}
 .play-button.is-visible{opacity:1;visibility:visible;pointer-events:auto}
-.play-pill{display:grid;padding:15px;border:1px solid rgba(255,255,255,.68);border-radius:50%;background:rgba(0,0,0,.72);transform:translateY(8%) scale(.96);box-shadow:0 10px 35px rgba(0,0,0,.32);backdrop-filter:blur(8px);place-items:center;transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1),border-color .3s ease,background-color .3s ease}
+.play-pill{display:grid;width:86px;height:86px;border:1px solid rgba(255,255,255,.58);border-radius:50%;background:rgba(0,0,0,.68);transform:translateY(8%) scale(.96);box-shadow:0 10px 35px rgba(0,0,0,.32);backdrop-filter:blur(8px);place-items:center;animation:play-pulse 3.6s ease-in-out infinite;transition:transform .9s cubic-bezier(.2,.7,.2,1),border-color .3s ease,background-color .3s ease}
 .play-button.is-visible .play-pill{transform:translateY(0) scale(1)}
-.play-button:hover .play-pill,.play-button:focus-visible .play-pill{border-color:#fff;background:rgba(12,12,12,.88)}
+.play-button:hover .play-pill,.play-button:focus-visible .play-pill{filter:brightness(1.18)}
 .play-button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:-3px}
-.play-icon{display:block;width:32px;height:32px;overflow:visible}
-.play-ring{fill:none;stroke:currentColor;stroke-width:1.25;transform-origin:14px 14px;animation:play-pulse 3.6s ease-in-out infinite}
+.play-icon{display:block;width:38px;height:38px;overflow:visible}
 .play-triangle{fill:currentColor}
-@keyframes play-pulse{0%,100%{opacity:.42;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+@keyframes play-pulse{0%,100%{border-color:rgba(255,255,255,.4);background:rgba(0,0,0,.62);box-shadow:0 10px 35px rgba(0,0,0,.3)}50%{border-color:rgba(255,255,255,.9);background:rgba(12,12,12,.82);box-shadow:0 10px 42px rgba(255,255,255,.12)}}
 .loading-indicator{position:absolute;inset:0;z-index:2;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
 .loading-indicator.is-visible{opacity:1}
 .loading-indicator.has-error{pointer-events:auto}
@@ -132,9 +131,9 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 @media(min-width:1700px){.gallery-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
 @media(max-width:1200px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}.play-pill{padding:14px}.release-links{right:8px;gap:3px}.release-link{width:32px;height:32px}.release-link svg{width:19px;height:19px}}
+@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}.play-pill{width:80px;height:80px}.release-links{right:8px;gap:3px}.release-link{width:32px;height:32px}.release-link svg{width:19px;height:19px}}
 @media(max-width:380px){.gallery-grid{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator,.play-button,.play-pill,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner,.play-ring{animation:none!important}}
+@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator,.play-button,.play-pill,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner,.play-pill{animation:none!important}}
 </style>
 </head>
 <body>
@@ -159,7 +158,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
       <a class="release-link" data-service="spotify" target="_blank" rel="noopener noreferrer" aria-label="Listen on Spotify" title="Spotify"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.3 9.3c3.5-1 7.3-.7 10.3 1"/><path d="M8 12.4c2.9-.8 6.2-.5 8.8.8"/><path d="M8.8 15.3c2.3-.6 4.8-.3 6.8.7"/></svg></a>
     </nav>
   </div>
-  <div class="player-frame"><iframe id="video-player" title="APOKALIS video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="loading-indicator" id="loading-indicator" role="status" aria-label="Loading video" aria-hidden="true"><span class="loading-spinner"></span><a class="loading-error" id="loading-error" target="_blank" rel="noopener noreferrer">Open on YouTube</a></div><button class="play-button" id="play-button" type="button" aria-label="Play video with sound"><span class="play-pill"><svg class="play-icon" viewBox="0 0 28 28" aria-hidden="true"><circle class="play-ring" cx="14" cy="14" r="11.5"/><path class="play-triangle" d="M11.5 9.4 19 14l-7.5 4.6z"/></svg></span></button></div>
+  <div class="player-frame"><iframe id="video-player" title="APOKALIS video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="loading-indicator" id="loading-indicator" role="status" aria-label="Loading video" aria-hidden="true"><span class="loading-spinner"></span><a class="loading-error" id="loading-error" target="_blank" rel="noopener noreferrer">Open on YouTube</a></div><button class="play-button" id="play-button" type="button" aria-label="Play video with sound"><span class="play-pill"><svg class="play-icon" viewBox="0 0 28 28" aria-hidden="true"><path class="play-triangle" d="M10.5 8.4 20 14l-9.5 5.6z"/></svg></span></button></div>
 </div>
 <div id="logo-wrap" role="img" aria-label="APOKALIS"><canvas id="gl"></canvas>
   <svg id="bevel" viewBox="0 0 4000 1155" aria-hidden="true">
