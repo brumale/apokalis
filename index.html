@@ -96,7 +96,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 @media(hover:hover) and (pointer:fine){.film:hover img{transform:scale(1.025)}}
 .film:focus-visible{outline:2px solid #fff;outline-offset:3px}
 @media(pointer:coarse){.film:focus-visible,body.player-active #logo-wrap:focus-visible{outline:none}}
-#player-stage{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;background:#000;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .5s ease,visibility 0s linear .5s}
+#player-stage{position:fixed;inset:0;z-index:5;display:flex;width:100%;height:100%;height:100dvh;flex-direction:column;background:#000;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .5s ease,visibility 0s linear .5s}
 #player-stage.is-open{visibility:visible;opacity:1;pointer-events:auto;transition-delay:0s}
 #player-stage.is-closing{visibility:hidden;opacity:0;pointer-events:none;transition:none}
 .player-bar{position:relative;flex:none;height:72px;background:#000}
@@ -107,7 +107,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .release-link:hover{opacity:1;transform:scale(1.07)}
 .release-link:focus-visible{outline:1px solid #fff;outline-offset:1px;opacity:1}
 .player-frame{position:relative;flex:1;min-height:0;overflow:hidden}
-#video-player{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;visibility:hidden;opacity:0;filter:brightness(1);pointer-events:none;transition:opacity 1s ease,filter 1s ease}
+#video-player{position:absolute;top:50%;left:50%;display:block;width:100%!important;height:100%!important;border:0;visibility:hidden;opacity:0;filter:brightness(1);transform:translate3d(-50%,-50%,0);pointer-events:none;transition:opacity 1s ease,filter 1s ease}
 #video-player.is-ready{visibility:visible;opacity:1;pointer-events:auto}
 #video-player.is-ready.awaiting-play{opacity:.78;filter:brightness(.82);pointer-events:none}
 .play-button{position:absolute;z-index:3;inset:0;display:grid;width:100%;height:100%;padding:0;border:0;background:transparent;color:#fff;font:inherit;opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;place-items:center;-webkit-tap-highlight-color:transparent}
@@ -132,7 +132,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 @media(min-width:1700px){.gallery-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
 @media(max-width:1200px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}#player-stage{height:100dvh}.player-bar{height:64px}.play-pill{width:80px;height:80px}.release-links{right:8px;gap:3px}.release-link{width:32px;height:32px}.release-link svg{width:19px;height:19px}}
+@media(max-width:650px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gallery-inner{padding:24px 12px}.gallery-header{height:52px;margin-bottom:26px}body.logo-settling #logo-wrap{top:50px}body.player-active #logo-wrap{top:32px;width:108px}.player-bar{height:64px}.play-pill{width:80px;height:80px}.release-links{right:8px;gap:3px}.release-link{width:32px;height:32px}.release-link svg{width:19px;height:19px}}
 @media(max-width:380px){.gallery-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film img,.loading-indicator,.play-button,.play-pill,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}.gallery-grid.is-appearing .film{animation-duration:.01ms!important;animation-delay:0s!important}.loading-spinner,.play-pill{animation:none!important}}
 </style>
@@ -1523,6 +1523,7 @@ let lastSelectedFilm = null;
 let activeFilm = null;
 let openedWithKeyboard = false;
 let masonryFrame = null;
+let playerResizeFrame = null;
 let unloadTimer = null;
 let readinessTimer = null;
 let loaderDelayTimer = null;
@@ -1571,6 +1572,20 @@ function layoutMasonry() {
 function scheduleMasonry() {
   if (masonryFrame !== null) cancelAnimationFrame(masonryFrame);
   masonryFrame = requestAnimationFrame(layoutMasonry);
+}
+
+function syncPlayerSize() {
+  playerResizeFrame = null;
+  if (!playerStage.classList.contains('is-open') || !youtubeReady || !youtubePlayer) return;
+  const width = playerFrame.clientWidth;
+  const height = playerFrame.clientHeight;
+  if (!width || !height) return;
+  try { youtubePlayer.setSize(width, height); } catch (error) { /* CSS still keeps the fallback iframe centered. */ }
+}
+
+function schedulePlayerResize() {
+  if (playerResizeFrame !== null) cancelAnimationFrame(playerResizeFrame);
+  playerResizeFrame = requestAnimationFrame(syncPlayerSize);
 }
 
 function updateReleaseLinks(film) {
@@ -1877,6 +1892,7 @@ function createYouTubePlayer(film) {
         queueMicrotask(() => {
           if (!playerStage.classList.contains('is-open') || event.target !== youtubePlayer) return;
           youtubeReady = true;
+          schedulePlayerResize();
           try {
             if (playRequested) {
               event.target.unMute();
@@ -2029,6 +2045,7 @@ function openVideo(film, event = null, {historyMode = 'push', animateThumbnail =
   updateReleaseLinks(film);
   playerStage.classList.remove('is-closing');
   playerStage.classList.add('is-open');
+  schedulePlayerResize();
   playerStage.setAttribute('aria-hidden', 'false');
   galleryGrid.classList.add('is-leaving');
   document.body.classList.add('player-active');
@@ -2133,6 +2150,9 @@ films.forEach((film, index) => {
 playButton.addEventListener('click', startPlayback);
 scheduleMasonry();
 window.addEventListener('resize', scheduleMasonry, { passive:true });
+window.addEventListener('resize', schedulePlayerResize, { passive:true });
+window.addEventListener('orientationchange', schedulePlayerResize, { passive:true });
+if ('ResizeObserver' in window) new ResizeObserver(schedulePlayerResize).observe(playerFrame);
 logo.addEventListener('click', returnToGallery);
 logo.addEventListener('keydown', event => {
   if (playerStage.classList.contains('is-open') && (event.key === 'Enter' || event.key === ' ')) {
