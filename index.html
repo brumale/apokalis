@@ -112,8 +112,8 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 #video-player.is-ready.awaiting-play{opacity:.78;filter:brightness(.82);pointer-events:none}
 .play-button{position:absolute;z-index:3;inset:0;display:grid;width:100%;height:100%;padding:0;border:0;background:transparent;color:#fff;font:inherit;opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;place-items:center;-webkit-tap-highlight-color:transparent}
 .play-button.is-visible{opacity:1;visibility:visible;pointer-events:auto}
-.play-pill{display:grid;width:86px;height:86px;border:1px solid rgba(255,255,255,.58);border-radius:50%;background:rgba(0,0,0,.68);transform:translateY(8%) scale(.96);box-shadow:0 10px 35px rgba(0,0,0,.32);backdrop-filter:blur(8px);place-items:center;animation:play-pulse 3.6s ease-in-out infinite;transition:transform .9s cubic-bezier(.2,.7,.2,1),border-color .3s ease,background-color .3s ease}
-.play-button.is-visible .play-pill{transform:translateY(0) scale(1)}
+.play-pill{display:grid;width:86px;height:86px;border:1px solid rgba(255,255,255,.58);border-radius:50%;background:rgba(0,0,0,.68);transform:translateY(8%) scale(.96);box-shadow:0 10px 35px rgba(0,0,0,.32);backdrop-filter:blur(8px);place-items:center;transition:transform .9s cubic-bezier(.2,.7,.2,1),border-color .3s ease,background-color .3s ease}
+.play-button.is-visible .play-pill{transform:translateY(0) scale(1);animation:play-pulse 3.6s ease-in-out infinite}
 .play-button:hover .play-pill,.play-button:focus-visible .play-pill{filter:brightness(1.18)}
 .play-button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:-3px}
 .play-icon{display:block;width:48px;height:48px;overflow:visible}
@@ -122,7 +122,8 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .loading-indicator{position:absolute;inset:0;z-index:2;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .45s ease}
 .loading-indicator.is-visible{opacity:1}
 .loading-indicator.has-error{pointer-events:auto}
-.loading-spinner{display:block;width:34px;height:34px;border:2px solid #4a4a4a;border-top-color:#fff;border-radius:50%;animation:spinner-turn .8s linear infinite}
+.loading-spinner{display:block;width:34px;height:34px;border:2px solid #4a4a4a;border-top-color:#fff;border-radius:50%}
+.loading-indicator.is-visible .loading-spinner{animation:spinner-turn .8s linear infinite}
 .loading-indicator.has-error .loading-spinner{display:none}
 .loading-error{display:none;color:#fff;font-size:13px;letter-spacing:.04em;text-decoration:underline;text-underline-offset:4px}
 .loading-indicator.has-error .loading-error{display:block}
@@ -141,13 +142,13 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
   <div class="gallery-inner">
     <div class="gallery-header" aria-hidden="true"></div>
     <div class="gallery-grid" aria-label="Choose a video">
-      <button class="film" data-title="ti ricordi" data-slug="ti-ricordi" type="button" data-video="VGkt0qDVBxc" aria-label="Play ti ricordi" title="ti ricordi"><img src="music/7.png" width="1080" height="1920" alt="Radiating lines on black" fetchpriority="high"></button>
-      <button class="film" data-title="asasuzume" data-slug="asasuzume" type="button" data-video="7902GwM3Bvs" aria-label="Play asasuzume" title="asasuzume"><img src="music/6.png" width="1080" height="1080" alt="Abstract floating forms"></button>
-      <button class="film" data-title="SSababa" data-slug="ssababa" type="button" data-video="ztqQJGFcfEk" aria-label="Play SSababa" title="SSababa"><img src="music/5.jpg" width="1200" height="1600" alt="White geometric lines on black"></button>
-      <button class="film" data-title="t r a u m" data-slug="t-r-a-u-m" type="button" data-video="w6sMexD3D2I" aria-label="Play t r a u m" title="t r a u m"><img src="music/4.png" width="1080" height="1080" alt="Grey spiral on black"></button>
-      <button class="film" data-title="27" data-slug="27" type="button" data-video="H5jzMdYkcQg" aria-label="Play 27" title="27"><img src="music/3.png" width="1080" height="1080" alt="Abstract circular artwork"></button>
-      <button class="film" data-title="Unbound" data-slug="unbound" type="button" data-video="ITzUmmXda34" aria-label="Play UNBOUND" title="Unbound"><img src="music/2.jpeg" width="865" height="1537" alt="Portrait in bright sunlight"></button>
-      <button class="film" data-title="Spiralbound" data-slug="spiralbound" type="button" data-video="Of0MV1Cwbx4" aria-label="Play Spiralbound" title="Spiralbound"><img src="music/1.jpeg" width="940" height="1253" alt="Spiderweb in warm light"></button>
+      <button class="film" data-title="ti ricordi" data-slug="ti-ricordi" type="button" data-video="VGkt0qDVBxc" aria-label="Play ti ricordi" title="ti ricordi"><img src="music/7.webp" width="1080" height="1920" alt="Radiating lines on black" fetchpriority="high"></button>
+      <button class="film" data-title="asasuzume" data-slug="asasuzume" type="button" data-video="7902GwM3Bvs" aria-label="Play asasuzume" title="asasuzume"><img src="music/6.webp" width="1080" height="1080" alt="Abstract floating forms"></button>
+      <button class="film" data-title="SSababa" data-slug="ssababa" type="button" data-video="ztqQJGFcfEk" aria-label="Play SSababa" title="SSababa"><img src="music/5.webp" width="1200" height="1600" alt="White geometric lines on black"></button>
+      <button class="film" data-title="t r a u m" data-slug="t-r-a-u-m" type="button" data-video="w6sMexD3D2I" aria-label="Play t r a u m" title="t r a u m"><img src="music/4.webp" width="1080" height="1080" alt="Grey spiral on black"></button>
+      <button class="film" data-title="27" data-slug="27" type="button" data-video="H5jzMdYkcQg" aria-label="Play 27" title="27"><img src="music/3.webp" width="1080" height="1080" alt="Abstract circular artwork"></button>
+      <button class="film" data-title="Unbound" data-slug="unbound" type="button" data-video="ITzUmmXda34" aria-label="Play UNBOUND" title="Unbound"><img src="music/2.webp" width="865" height="1537" alt="Portrait in bright sunlight"></button>
+      <button class="film" data-title="Spiralbound" data-slug="spiralbound" type="button" data-video="Of0MV1Cwbx4" aria-label="Play Spiralbound" title="Spiralbound"><img src="music/1.webp" width="940" height="1253" alt="Spiderweb in warm light"></button>
     </div>
   </div>
 </main>
@@ -1527,7 +1528,7 @@ let readinessTimer = null;
 let loaderDelayTimer = null;
 let releaseLinksTimer = null;
 let captionResetTimers = [];
-let filmOrderTimer = null;
+let filmAnimationTimer = null;
 let loadVersion = 0;
 let revealScheduledVersion = 0;
 let frameReadyVersion = 0;
@@ -1551,6 +1552,7 @@ const LAUNCH_FADE_MS = 2800;
 const ANIMATED_LOADER_DELAY_MS = 1650;
 const DIRECT_LOADER_DELAY_MS = 550;
 const RELEASE_LINK_DELAY_MS = 4000;
+const FILM_ANIMATION_CLEANUP_MS = 2800;
 
 function layoutMasonry() {
   masonryFrame = null;
@@ -1657,19 +1659,21 @@ function disableCaptionsOnStart(player, version) {
 }
 
 function showFilms(returningFilm = null) {
-  window.clearTimeout(filmOrderTimer);
+  window.clearTimeout(filmAnimationTimer);
   galleryGrid.classList.add('is-resetting', 'has-appeared');
   galleryGrid.classList.remove('is-appearing', 'is-leaving');
   if (returningFilm) {
     let order = 1;
     films.forEach(film => film.style.setProperty('--order', film === returningFilm ? 0 : order++));
-    filmOrderTimer = window.setTimeout(() => {
-      films.forEach((film, index) => film.style.setProperty('--order', index));
-    }, 3400);
   }
   void galleryGrid.offsetWidth;
   galleryGrid.classList.add('is-appearing');
   galleryGrid.classList.remove('is-resetting');
+  filmAnimationTimer = window.setTimeout(() => {
+    galleryGrid.classList.remove('is-appearing');
+    films.forEach((film, index) => film.style.setProperty('--order', index));
+    filmAnimationTimer = null;
+  }, FILM_ANIMATION_CLEANUP_MS);
 }
 
 function loadYouTubeAPI() {
