@@ -107,8 +107,8 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .release-link:hover{opacity:1;transform:scale(1.07)}
 .release-link:focus-visible{outline:1px solid #fff;outline-offset:1px;opacity:1}
 .player-frame{position:relative;flex:1;min-height:0;overflow:hidden}
-#video-player{position:absolute;top:50%;left:50%;display:block;width:100%!important;height:100%!important;border:0;visibility:hidden;opacity:0;filter:brightness(1);transform:translate3d(-50%,-50%,0);pointer-events:none;transition:opacity 1s ease,filter 1s ease}
-#video-player.is-ready{visibility:visible;opacity:1;pointer-events:auto}
+#video-player{position:absolute;top:50%;left:50%;display:block;width:100%!important;height:100%!important;border:0;opacity:0;filter:brightness(1);transform:translate3d(-50%,-50%,0);pointer-events:none;transition:opacity 1s ease,filter 1s ease}
+#video-player.is-ready{opacity:1;pointer-events:auto}
 #video-player.is-ready.awaiting-play{opacity:.78;filter:brightness(.82);pointer-events:none}
 .play-button{position:absolute;z-index:3;inset:0;display:grid;width:100%;height:100%;padding:0;border:0;background:transparent;color:#fff;font:inherit;opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;place-items:center;-webkit-tap-highlight-color:transparent}
 .play-button.is-visible{opacity:1;visibility:visible;pointer-events:auto}
@@ -1912,6 +1912,7 @@ function createYouTubePlayer(film) {
           markPlayerCued(loadVersion);
         }
         if (event.target === youtubePlayer && event.data === YT.PlayerState.PLAYING && playerHasCurrentVideo(event.target)) {
+          schedulePlayerResize();
           disableCaptionsOnStart(event.target, loadVersion);
           if (playRequested) {
             try {
