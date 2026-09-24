@@ -78,7 +78,7 @@ body.logo-settled #gl,body.logo-settled #bevel{opacity:0}
 .bevel-blobB{opacity:.0612}
 .bevel-blobC{opacity:.042075}
 
-#logo-wrap{transition:top .95s cubic-bezier(.2,.7,.2,1),left .95s cubic-bezier(.2,.7,.2,1),width .95s cubic-bezier(.2,.7,.2,1),transform .95s cubic-bezier(.2,.7,.2,1);will-change:top,left,width,transform}
+#logo-wrap{transition:top 1.25s cubic-bezier(.16,1,.3,1),left 1.25s cubic-bezier(.16,1,.3,1),width 1.25s cubic-bezier(.16,1,.3,1),transform 1.25s cubic-bezier(.16,1,.3,1);will-change:top,left,width,transform}
 body.logo-settling #logo-wrap{top:clamp(52px,6.7vw,95px);left:50%;width:clamp(180px,22vw,280px);transform:translate(-50%,-50%)}
 body.logo-settled #logo-wrap{animation:none}
 body.player-active #logo-wrap{top:36px;left:50%;width:clamp(105px,11vw,145px);transform:translate(-50%,-50%);cursor:pointer;transition-duration:.65s}
@@ -95,7 +95,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .gallery-grid.is-resetting{opacity:1;transition:none}
 .gallery-grid.is-resetting .film{opacity:0!important;animation:none!important;transition:none!important}
 .gallery-grid.is-leaving{opacity:0;transition:opacity .45s ease}
-.gallery-grid.is-appearing .film{animation:film-emerge 1.2s cubic-bezier(.18,.7,.2,1) both;animation-delay:calc(var(--order) * 240ms)}
+.gallery-grid.is-appearing .film{animation:film-emerge 1.8s cubic-bezier(.18,.7,.2,1) both;animation-delay:calc(var(--order) * 240ms)}
 @keyframes film-emerge{from{opacity:0;transform:translate3d(0,35px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 @media(hover:hover) and (pointer:fine){.film:hover img{transform:scale(1.025)}}
 .film:focus-visible{outline:2px solid #fff;outline-offset:3px}
@@ -1557,7 +1557,7 @@ const LAUNCH_FADE_MS = 2800;
 const ANIMATED_LOADER_DELAY_MS = 1650;
 const DIRECT_LOADER_DELAY_MS = 550;
 const RELEASE_LINK_DELAY_MS = 4000;
-const FILM_ANIMATION_CLEANUP_MS = 2800;
+const FILM_ANIMATION_CLEANUP_MS = 3400;
 const MASK_FADE_MS = 9000;
 
 function layoutMasonry() {
@@ -1678,14 +1678,23 @@ function disableCaptionsOnStart(player, version) {
   });
 }
 
+function shuffledFilms(filmsToShuffle) {
+  const shuffled = [...filmsToShuffle];
+  for (let index = shuffled.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
 function showFilms(returningFilm = null) {
   window.clearTimeout(filmAnimationTimer);
   galleryGrid.classList.add('is-resetting', 'has-appeared');
   galleryGrid.classList.remove('is-appearing', 'is-leaving');
-  if (returningFilm) {
-    let order = 1;
-    films.forEach(film => film.style.setProperty('--order', film === returningFilm ? 0 : order++));
-  }
+  const revealOrder = returningFilm
+    ? [returningFilm, ...shuffledFilms(films.filter(film => film !== returningFilm))]
+    : shuffledFilms(films);
+  revealOrder.forEach((film, index) => film.style.setProperty('--order', index));
   void galleryGrid.offsetWidth;
   galleryGrid.classList.add('is-appearing');
   galleryGrid.classList.remove('is-resetting');
@@ -2124,6 +2133,12 @@ function returnToGallery() {
   }
 }
 
+function handOffSplashLogo() {
+  logo.style.transform = 'translate(-50%,-55%) scale(.97)';
+  void logo.offsetWidth;
+  requestAnimationFrame(() => logo.style.removeProperty('transform'));
+}
+
 function startIntroSequence() {
   document.body.classList.add('intro-running');
   const linkedFilm = filmFromURL();
@@ -2137,11 +2152,13 @@ function startIntroSequence() {
     const currentLinkedFilm = filmFromURL();
     if (currentLinkedFilm) {
       document.body.classList.add('logo-settled', 'intro-complete');
+      handOffSplashLogo();
       openVideo(currentLinkedFilm, null, {historyMode:'direct', animateThumbnail:false});
       window.setTimeout(() => window.stopLogoAnimation?.(), MASK_FADE_MS + 200);
       return;
     }
     document.body.classList.add('logo-settling', 'logo-settled', 'gallery-revealed');
+    handOffSplashLogo();
     showFilms();
     window.setTimeout(() => {
       document.body.classList.add('intro-complete');
