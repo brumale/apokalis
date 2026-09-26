@@ -95,6 +95,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .film-title{position:relative;display:block;padding:.3em .08em 0;color:var(--muted);font-family:"Partita",serif;font-size:16px;font-weight:400;line-height:1.6;letter-spacing:.01em}
 .film-number{position:absolute;right:.08em;bottom:.12em;z-index:1;color:var(--number);font-family:"Svolta",serif;font-size:22px;font-variant-numeric:tabular-nums;line-height:1;transform:scale(1.55);transform-origin:right bottom}
 .film-name{display:block;text-align:left}
+.gallery-footer{margin-top:clamp(28px,4vw,56px);color:var(--border);font-family:"Partita",serif;font-size:13px;line-height:1.5;text-align:center}
 .gallery-grid:not(.has-appeared) .film-art,.gallery-grid:not(.has-appeared) .film-name,.gallery-grid:not(.has-appeared) .film-number{opacity:0}
 .gallery-grid.is-resetting{opacity:1;transition:none}
 .gallery-grid.is-resetting .film-art,.gallery-grid.is-resetting .film-name,.gallery-grid.is-resetting .film-number{opacity:0!important;animation:none!important;transition:none!important}
@@ -162,6 +163,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
       <a class="film" href="?watch=unbound" data-title="UNBOUND" data-slug="unbound" data-video="ITzUmmXda34" aria-label="Play 2 UNBOUND"><span class="film-art"><img src="music/2.webp" width="865" height="1537" alt=""></span><span class="film-title"><span class="film-name">UNBOUND</span><span class="film-number">2</span></span></a>
       <a class="film" href="?watch=spiralbound" data-title="Spiralbound" data-slug="spiralbound" data-video="Of0MV1Cwbx4" aria-label="Play 1 Spiralbound"><span class="film-art"><img src="music/1.webp" width="940" height="1253" alt=""></span><span class="film-title"><span class="film-name">Spiralbound</span><span class="film-number">1</span></span></a>
     </div>
+    <footer class="gallery-footer">© apokalis.com</footer>
   </div>
 </main>
 <div id="player-stage" role="region" aria-label="Video player" aria-hidden="true">
@@ -1703,7 +1705,6 @@ function showFilms() {
   galleryGrid.classList.remove('is-resetting');
   filmAnimationTimer = window.setTimeout(() => {
     galleryGrid.classList.remove('is-appearing');
-    films.forEach((film, index) => film.style.setProperty('--order', index));
     filmAnimationTimer = null;
   }, FILM_ANIMATION_CLEANUP_MS);
 }
@@ -2235,8 +2236,7 @@ function startIntroSequence() {
   }, INTRO_HOLD_MS);
 }
 
-films.forEach((film, index) => {
-  film.style.setProperty('--order', index);
+films.forEach(film => {
   film.addEventListener('click', event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
