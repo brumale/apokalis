@@ -90,7 +90,8 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .gallery-header{height:clamp(52px,6.35vw,81px);margin-bottom:clamp(30px,4vw,58px)}
 .gallery-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:4px;grid-auto-flow:row;align-items:start;gap:var(--grid-gap)}
 .film{display:block;width:100%;margin:0;padding:0;border:0;background:none;color:var(--white);cursor:pointer;text-align:left;text-decoration:none;perspective:1000px}
-.film-art{--tilt-x:0deg;--tilt-y:0deg;position:relative;display:block;overflow:hidden;border:1px solid var(--border);background:var(--card-bg);line-height:0;transform:rotateY(var(--tilt-y)) rotateX(var(--tilt-x));scale:1;transition:transform .2s cubic-bezier(.215,.61,.355,1),scale 1s}
+.film-tilt{--tilt-x:0deg;--tilt-y:0deg;position:relative;display:block;transform:rotateY(var(--tilt-y)) rotateX(var(--tilt-x));transform-style:preserve-3d;transition:transform .2s cubic-bezier(.215,.61,.355,1)}
+.film-art{position:relative;display:block;overflow:hidden;border:1px solid var(--border);background:var(--card-bg);line-height:0;scale:1;transition:scale 1s}
 .film img{display:block;width:100%;height:auto}
 .film-title{position:relative;display:block;padding:.3em .08em 0;color:var(--muted);font-family:"Partita",serif;font-size:16px;font-weight:400;line-height:1.6;letter-spacing:.01em}
 .film-number{position:absolute;right:.08em;bottom:.12em;z-index:1;color:var(--number);font-family:"Svolta",serif;font-size:22px;font-variant-numeric:tabular-nums;line-height:1;transform:scale(1.55);transform-origin:right bottom}
@@ -147,7 +148,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){:root{--grid-gap:8px}.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gallery-inner{padding:24px var(--grid-gap) var(--grid-gap)}.gallery-header{height:52px;margin-bottom:26px}body.player-active #logo-wrap{top:32px;width:108px}.player-bar{height:64px}.play-pill{width:80px;height:80px}.release-links{right:8px;gap:4px}.release-link{width:32px;height:32px}}
 @media(max-width:380px){.gallery-grid{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film-art,.loading-indicator,.play-button,.play-pill,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}#logo-wrap,.gallery-grid.is-appearing .film-art,.gallery-grid.is-appearing .film-name,.gallery-grid.is-appearing .film-number{animation-duration:.01ms!important;animation-delay:0s!important}.play-pill,.loading-letter{animation:none!important}}
+@media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film-tilt,.film-art,.loading-indicator,.play-button,.play-pill,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}#logo-wrap,.gallery-grid.is-appearing .film-art,.gallery-grid.is-appearing .film-name,.gallery-grid.is-appearing .film-number{animation-duration:.01ms!important;animation-delay:0s!important}.play-pill,.loading-letter{animation:none!important}}
 </style>
 </head>
 <body>
@@ -155,13 +156,13 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
   <div class="gallery-inner">
     <div class="gallery-header" aria-hidden="true"></div>
     <div class="gallery-grid" aria-label="Choose a video">
-      <a class="film" href="?watch=tiricordi" data-title="ti ricordi" data-slug="tiricordi" data-video="VGkt0qDVBxc" aria-label="Play 7 ti ricordi"><span class="film-art"><img src="music/7.webp" width="1080" height="1920" alt="" fetchpriority="high"></span><span class="film-title"><span class="film-name">ti ricordi</span><span class="film-number">7</span></span></a>
-      <a class="film" href="?watch=asasuzume" data-title="asasuzume" data-slug="asasuzume" data-video="7902GwM3Bvs" aria-label="Play 6 asasuzume"><span class="film-art"><img src="music/6.webp" width="1080" height="1080" alt=""></span><span class="film-title"><span class="film-name">asasuzume</span><span class="film-number">6</span></span></a>
-      <a class="film" href="?watch=ssababa" data-title="SSababa" data-slug="ssababa" data-video="ztqQJGFcfEk" aria-label="Play 5 SSababa"><span class="film-art"><img src="music/5.webp" width="1200" height="1600" alt=""></span><span class="film-title"><span class="film-name">SSababa</span><span class="film-number">5</span></span></a>
-      <a class="film" href="?watch=traum" data-title="t r a u m" data-slug="traum" data-video="w6sMexD3D2I" aria-label="Play 4 t r a u m"><span class="film-art"><img src="music/4.webp" width="1080" height="1080" alt=""></span><span class="film-title"><span class="film-name">t r a u m</span><span class="film-number">4</span></span></a>
-      <a class="film" href="?watch=27" data-title="27" data-slug="27" data-video="H5jzMdYkcQg" aria-label="Play 3 27"><span class="film-art"><img src="music/3.webp" width="1080" height="1080" alt=""></span><span class="film-title"><span class="film-name">27</span><span class="film-number">3</span></span></a>
-      <a class="film" href="?watch=unbound" data-title="UNBOUND" data-slug="unbound" data-video="ITzUmmXda34" aria-label="Play 2 UNBOUND"><span class="film-art"><img src="music/2.webp" width="865" height="1537" alt=""></span><span class="film-title"><span class="film-name">UNBOUND</span><span class="film-number">2</span></span></a>
-      <a class="film" href="?watch=spiralbound" data-title="Spiralbound" data-slug="spiralbound" data-video="Of0MV1Cwbx4" aria-label="Play 1 Spiralbound"><span class="film-art"><img src="music/1.webp" width="940" height="1253" alt=""></span><span class="film-title"><span class="film-name">Spiralbound</span><span class="film-number">1</span></span></a>
+      <a class="film" href="?watch=tiricordi" data-title="ti ricordi" data-slug="tiricordi" data-video="VGkt0qDVBxc" aria-label="Play 7 ti ricordi"><span class="film-tilt"><span class="film-art"><img src="music/7.webp" width="1080" height="1920" alt="" fetchpriority="high"></span></span><span class="film-title"><span class="film-name">ti ricordi</span><span class="film-number">7</span></span></a>
+      <a class="film" href="?watch=asasuzume" data-title="asasuzume" data-slug="asasuzume" data-video="7902GwM3Bvs" aria-label="Play 6 asasuzume"><span class="film-tilt"><span class="film-art"><img src="music/6.webp" width="1080" height="1080" alt=""></span></span><span class="film-title"><span class="film-name">asasuzume</span><span class="film-number">6</span></span></a>
+      <a class="film" href="?watch=ssababa" data-title="SSababa" data-slug="ssababa" data-video="ztqQJGFcfEk" aria-label="Play 5 SSababa"><span class="film-tilt"><span class="film-art"><img src="music/5.webp" width="1200" height="1600" alt=""></span></span><span class="film-title"><span class="film-name">SSababa</span><span class="film-number">5</span></span></a>
+      <a class="film" href="?watch=traum" data-title="t r a u m" data-slug="traum" data-video="w6sMexD3D2I" aria-label="Play 4 t r a u m"><span class="film-tilt"><span class="film-art"><img src="music/4.webp" width="1080" height="1080" alt=""></span></span><span class="film-title"><span class="film-name">t r a u m</span><span class="film-number">4</span></span></a>
+      <a class="film" href="?watch=27" data-title="27" data-slug="27" data-video="H5jzMdYkcQg" aria-label="Play 3 27"><span class="film-tilt"><span class="film-art"><img src="music/3.webp" width="1080" height="1080" alt=""></span></span><span class="film-title"><span class="film-name">27</span><span class="film-number">3</span></span></a>
+      <a class="film" href="?watch=unbound" data-title="UNBOUND" data-slug="unbound" data-video="ITzUmmXda34" aria-label="Play 2 UNBOUND"><span class="film-tilt"><span class="film-art"><img src="music/2.webp" width="865" height="1537" alt=""></span></span><span class="film-title"><span class="film-name">UNBOUND</span><span class="film-number">2</span></span></a>
+      <a class="film" href="?watch=spiralbound" data-title="Spiralbound" data-slug="spiralbound" data-video="Of0MV1Cwbx4" aria-label="Play 1 Spiralbound"><span class="film-tilt"><span class="film-art"><img src="music/1.webp" width="940" height="1253" alt=""></span></span><span class="film-title"><span class="film-name">Spiralbound</span><span class="film-number">1</span></span></a>
     </div>
     <footer class="gallery-footer">© apokalis.com</footer>
   </div>
@@ -1508,7 +1509,7 @@ const releaseAnchors = Object.fromEntries([...releaseLinks.querySelectorAll('[da
 const films = [...galleryGrid.querySelectorAll('.film')];
 const hoverTilt = window.matchMedia('(hover:hover) and (pointer:fine)');
 const filmsBySlug = new Map(films.map(film => [film.dataset.slug, film]));
-const filmRevealOrder = ['spiralbound', '27', 'unbound', 'ssababa', 'traum', 'tiricordi', 'asasuzume'].map(slug => filmsBySlug.get(slug));
+const filmRevealOrder = ['asasuzume', 'tiricordi', 'traum', 'ssababa', 'unbound', '27', 'spiralbound'].map(slug => filmsBySlug.get(slug));
 const releases = {
   spiralbound: {
     apple:'https://music.apple.com/au/album/spiralbound/6793890953?i=6793890954',
@@ -2242,18 +2243,20 @@ films.forEach(film => {
     event.preventDefault();
     openVideo(film, event);
   });
-  const filmArt = film.querySelector('.film-art');
-  film.addEventListener('mousemove', event => {
+  const filmTilt = film.querySelector('.film-tilt');
+  const updateFilmTilt = event => {
     if (!hoverTilt.matches) return;
     const rect = film.getBoundingClientRect();
-    const rotateY = (event.clientX - rect.left - rect.width / 2) / 33;
-    const rotateX = (rect.height / 2 - (event.clientY - rect.top)) / 33;
-    filmArt.style.setProperty('--tilt-y', `${rotateY}deg`);
-    filmArt.style.setProperty('--tilt-x', `${rotateX}deg`);
-  });
+    const rotateY = (event.clientX - rect.left - film.offsetWidth / 2) / 33;
+    const rotateX = (filmTilt.offsetHeight / 2 - (event.clientY - rect.top)) / 33;
+    filmTilt.style.setProperty('--tilt-y', `${rotateY}deg`);
+    filmTilt.style.setProperty('--tilt-x', `${rotateX}deg`);
+  };
+  film.addEventListener('mouseenter', updateFilmTilt);
+  film.addEventListener('mousemove', updateFilmTilt);
   film.addEventListener('mouseleave', () => {
-    filmArt.style.setProperty('--tilt-y', '0deg');
-    filmArt.style.setProperty('--tilt-x', '0deg');
+    filmTilt.style.setProperty('--tilt-y', '0deg');
+    filmTilt.style.setProperty('--tilt-x', '0deg');
   });
 });
 playButton.addEventListener('click', startPlayback);
