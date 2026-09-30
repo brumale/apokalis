@@ -138,7 +138,8 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .loading-indicator.is-visible{opacity:1}
 .loading-indicator.has-error{pointer-events:auto}
 .loading-letter{display:block;min-width:1em;color:var(--loader);font-family:"Partita Outline",serif;font-size:clamp(30px,4vw,48px);line-height:1;text-align:center;animation:allcolors .2s linear infinite alternate}
-@keyframes allcolors{0%{color:hsl(0,10%,50%)}16.6%{color:hsl(60,10%,50%)}33.2%{color:hsl(120,10%,50%)}49.8%{color:hsl(180,10%,50%)}68.4%{color:hsl(240,10%,50%)}83%{color:hsl(300,10%,50%)}100%{color:hsl(360,10%,50%)}}
+/* Match the presentation palette, passing through neutral grey instead of green. */
+@keyframes allcolors{0%{color:hsl(0,10%,50%)}14.3%{color:hsl(25,10%,50%)}28.6%{color:hsl(45,10%,50%)}35.7%{color:hsl(0,0%,50%)}42.9%{color:hsl(215,10%,50%)}57.1%{color:hsl(240,10%,50%)}71.4%{color:hsl(270,10%,50%)}85.7%{color:hsl(300,10%,50%)}100%{color:hsl(360,10%,50%)}}
 .loading-indicator.has-error .loading-letter{display:none}
 .loading-error{display:none;color:var(--white);font-size:13px;letter-spacing:.04em;text-decoration:underline;text-underline-offset:4px}
 .loading-indicator.has-error .loading-error{display:block}
