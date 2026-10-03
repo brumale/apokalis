@@ -36,8 +36,17 @@
 @font-face{font-family:"Svolta";src:url("website/Svolta-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 :root{color-scheme:dark;--black:#000;--gallery-bg:#080808;--card-bg:#111;--border:#303030;--loader:#5f5f5f;--muted:#727272;--number:#d0d0d0;--white:#fff;--soft-shadow:rgba(0,0,0,.32);--grid-gap:12px}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--black)}
+html,body{margin:0;min-height:100%;background:var(--black);cursor:url("website/whitegrain.svg"),auto}
 body{min-height:100vh;display:grid;place-items:center;overflow:hidden;color:var(--white);font-family:Arial,Helvetica,sans-serif;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+@keyframes cursor-allcolors{
+  0%,16.59%{cursor:url("website/rosegrain.svg"),pointer}
+  16.6%,33.19%{cursor:url("website/goldgrain.svg"),pointer}
+  33.2%,49.79%{cursor:url("website/greengrain.svg"),pointer}
+  49.8%,68.39%{cursor:url("website/cyangrain.svg"),pointer}
+  68.4%,82.99%{cursor:url("website/bluegrain.svg"),pointer}
+  83%,100%{cursor:url("website/violetgrain.svg"),pointer}
+}
+@media(hover:hover) and (pointer:fine){body.intro-running{cursor:url("website/blackgrain.svg"),auto}a:hover,button:hover,body.player-active #logo-wrap:hover{animation:cursor-allcolors .2s linear infinite alternate}}
 #logo-wrap{
   position:fixed;
   z-index:6;
@@ -89,7 +98,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .gallery-inner{width:100%;min-height:100%;margin:auto;padding:clamp(24px,3.5vw,54px) var(--grid-gap) var(--grid-gap)}
 .gallery-header{height:clamp(52px,6.35vw,81px);margin-bottom:clamp(30px,4vw,58px)}
 .gallery-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:4px;grid-auto-flow:row;align-items:start;gap:var(--grid-gap)}
-.film{display:block;width:100%;margin:0;padding:0;border:0;background:none;color:var(--white);cursor:pointer;text-align:left;text-decoration:none;perspective:1000px}
+.film{display:block;width:100%;margin:0;padding:0;border:0;background:none;color:var(--white);text-align:left;text-decoration:none;perspective:1000px}
 .film-tilt{--tilt-x:0deg;--tilt-y:0deg;position:relative;display:block;transform:rotateY(var(--tilt-y)) rotateX(var(--tilt-x));transform-style:preserve-3d;transition:transform .2s cubic-bezier(.215,.61,.355,1)}
 .film-art{position:relative;display:block;overflow:hidden;border:1px solid var(--border);background:var(--card-bg);line-height:0;scale:1;transition:scale 1s}
 .film img{display:block;width:100%;height:auto}
@@ -138,8 +147,8 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .loading-indicator.is-visible{opacity:1}
 .loading-indicator.has-error{pointer-events:auto}
 .loading-letter{display:block;min-width:1em;color:var(--loader);font-family:"Partita Outline",serif;font-size:clamp(30px,4vw,48px);line-height:1;text-align:center;animation:allcolors .2s linear infinite alternate}
-/* Match the presentation palette, passing through neutral grey instead of green. */
-@keyframes allcolors{0%{color:hsl(0,10%,50%)}14.3%{color:hsl(25,10%,50%)}28.6%{color:hsl(45,10%,50%)}35.7%{color:hsl(0,0%,50%)}42.9%{color:hsl(215,10%,50%)}57.1%{color:hsl(240,10%,50%)}71.4%{color:hsl(270,10%,50%)}85.7%{color:hsl(300,10%,50%)}100%{color:hsl(360,10%,50%)}}
+/* Selected WebGL-inspired palette at 10% saturation; neutral grey bridges warm colours and blue. */
+@keyframes allcolors{0%{color:hsl(0,10%,50%)}14.3%{color:hsl(25,10%,50%)}28.6%{color:hsl(45,10%,50%)}35.7%{color:hsl(0,0%,50%)}42.9%{color:hsl(210,10%,50%)}57.1%{color:hsl(232,10%,50%)}71.4%{color:hsl(275,10%,50%)}85.7%{color:hsl(310,10%,50%)}100%{color:hsl(360,10%,50%)}}
 .loading-indicator.has-error .loading-letter{display:none}
 .loading-error{display:none;color:var(--white);font-size:13px;letter-spacing:.04em;text-decoration:underline;text-underline-offset:4px}
 .loading-indicator.has-error .loading-error{display:block}
@@ -150,6 +159,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 @media(max-width:650px){:root{--grid-gap:8px}.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gallery-inner{padding:24px var(--grid-gap) var(--grid-gap)}.gallery-header{height:52px;margin-bottom:26px}body.player-active #logo-wrap{top:32px;width:108px}.player-bar{height:64px}.play-pill{width:80px;height:80px}.release-links{right:8px;gap:4px}.release-link{width:32px;height:32px}}
 @media(max-width:380px){.gallery-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){#gallery,#logo-wrap,#gl,#bevel,#player-stage,.gallery-grid,.film-tilt,.film-art,.loading-indicator,.play-button,.play-pill,.release-links,.release-link,#video-player{transition-duration:.01ms!important;transition-delay:0s!important}#logo-wrap,.gallery-grid.is-appearing .film-art,.gallery-grid.is-appearing .film-name,.gallery-grid.is-appearing .film-number{animation-duration:.01ms!important;animation-delay:0s!important}.play-pill,.loading-letter{animation:none!important}}
+@media(prefers-reduced-motion:reduce) and (hover:hover) and (pointer:fine){a:hover,button:hover,body.player-active #logo-wrap:hover{animation:none!important;cursor:url("website/whitegrain.svg"),pointer}}
 </style>
 </head>
 <body>
