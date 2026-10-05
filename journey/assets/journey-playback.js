@@ -5,7 +5,7 @@
   const visible = new Set();
   const allowed = () => !reducedMotion.matches && !connection?.saveData;
   function update(video) {
-    if (!allowed() || document.hidden || !visible.has(video)) {
+    if (document.documentElement.classList.contains('is-loading') || !allowed() || document.hidden || !visible.has(video)) {
       video.pause();
       if (!allowed() && video.hasAttribute('src')) {
         video.removeAttribute('src');
@@ -42,4 +42,5 @@
   reducedMotion.addEventListener('change', refresh);
   connection?.addEventListener('change', refresh);
   document.addEventListener('visibilitychange', refresh);
+  document.addEventListener('apokalis:ready', refresh);
 })();
