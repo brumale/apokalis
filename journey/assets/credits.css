@@ -1,0 +1,13 @@
+/* Website credits and links. */
+.credits{padding:24px var(--pad) 96px;color:var(--caption);text-align:center;font:14px/1.65 "Partita-Regular",monospace}
+.credits p{margin:0}
+.credits .credit-kicker{font-size:11px;letter-spacing:.08em;color:#777}
+.credits .credit-name{font-size:18px;color:#aaa;margin-top:4px}
+.credits .type-heading{margin-top:24px;margin-bottom:8px}
+.credits .font-line{font-size:15px;line-height:1.9}
+.credits .foundry-link{margin-top:12px}
+.credits .social-links{margin:0 0 28px;font-size:12px}
+.credits a{color:var(--title);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:600px){.credits .font-line{font-size:13px}}
+
+@media(max-width:800px){.credits{padding-bottom:64px}}
