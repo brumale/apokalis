@@ -14,7 +14,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <title>APOKALIS</title>
-<meta name="description" content="APOKALIS music videos: Spiralbound, UNBOUND, 27, t r a u m, SSababa, asasuzume, and ti ricordi.">
+<meta name="description" content="APOKALIS music videos: Real, Spiralbound, UNBOUND, 27, t r a u m, SSababa, asasuzume, and ti ricordi.">
 <meta name="author" content="Stefano Giliberti">
 <meta name="creator" content="@apokalissss">
 <meta name="robots" content="index,follow">
@@ -153,7 +153,7 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
 .loading-error{display:none;color:var(--white);font-size:13px;letter-spacing:.04em;text-decoration:underline;text-underline-offset:4px}
 .loading-indicator.has-error .loading-error{display:block}
 .launch-image{position:fixed;z-index:1;display:block;object-fit:contain;pointer-events:none;transform-origin:top left;backface-visibility:hidden;will-change:transform,opacity}
-@media(min-width:1700px){.gallery-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
+@media(min-width:1700px){.gallery-grid{grid-template-columns:repeat(8,minmax(0,1fr))}}
 @media(max-width:1200px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){:root{--grid-gap:8px}.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gallery-inner{padding:24px var(--grid-gap) var(--grid-gap)}.gallery-header{height:52px;margin-bottom:26px}body.player-active #logo-wrap{top:32px;width:108px}.player-bar{height:64px}.play-pill{width:80px;height:80px}.release-links{right:8px;gap:4px}.release-link{width:32px;height:32px}}
@@ -167,7 +167,8 @@ body.gallery-revealed #gallery{opacity:1;visibility:visible;transition-delay:0s}
   <div class="gallery-inner">
     <div class="gallery-header" aria-hidden="true"></div>
     <div class="gallery-grid" aria-label="Choose a video">
-      <a class="film" href="?watch=tiricordi" data-title="ti ricordi" data-slug="tiricordi" data-video="VGkt0qDVBxc" aria-label="Play 7 ti ricordi"><span class="film-tilt"><span class="film-art"><img src="music/7.webp" width="1080" height="1920" alt="" fetchpriority="high"></span></span><span class="film-title"><span class="film-name">ti ricordi</span><span class="film-number">7</span></span></a>
+      <a class="film" href="?watch=real" data-title="Real" data-slug="real" data-video="_SdhT0EoHJI" aria-label="Play 8 Real"><span class="film-tilt"><span class="film-art"><img src="music/8.webp" width="1200" height="1600" alt="" fetchpriority="high"></span></span><span class="film-title"><span class="film-name">Real</span><span class="film-number">8</span></span></a>
+      <a class="film" href="?watch=tiricordi" data-title="ti ricordi" data-slug="tiricordi" data-video="VGkt0qDVBxc" aria-label="Play 7 ti ricordi"><span class="film-tilt"><span class="film-art"><img src="music/7.webp" width="1080" height="1920" alt=""></span></span><span class="film-title"><span class="film-name">ti ricordi</span><span class="film-number">7</span></span></a>
       <a class="film" href="?watch=asasuzume" data-title="asasuzume" data-slug="asasuzume" data-video="7902GwM3Bvs" aria-label="Play 6 asasuzume"><span class="film-tilt"><span class="film-art"><img src="music/6.webp" width="1080" height="1080" alt=""></span></span><span class="film-title"><span class="film-name">asasuzume</span><span class="film-number">6</span></span></a>
       <a class="film" href="?watch=ssababa" data-title="SSababa" data-slug="ssababa" data-video="ztqQJGFcfEk" aria-label="Play 5 SSababa"><span class="film-tilt"><span class="film-art"><img src="music/5.webp" width="1200" height="1600" alt=""></span></span><span class="film-title"><span class="film-name">SSababa</span><span class="film-number">5</span></span></a>
       <a class="film" href="?watch=traum" data-title="t r a u m" data-slug="traum" data-video="w6sMexD3D2I" aria-label="Play 4 t r a u m"><span class="film-tilt"><span class="film-art"><img src="music/4.webp" width="1080" height="1080" alt=""></span></span><span class="film-title"><span class="film-name">t r a u m</span><span class="film-number">4</span></span></a>
@@ -1520,8 +1521,12 @@ const releaseAnchors = Object.fromEntries([...releaseLinks.querySelectorAll('[da
 const films = [...galleryGrid.querySelectorAll('.film')];
 const hoverTilt = window.matchMedia('(hover:hover) and (pointer:fine)');
 const filmsBySlug = new Map(films.map(film => [film.dataset.slug, film]));
-const filmRevealOrder = ['asasuzume', 'tiricordi', 'traum', 'ssababa', 'unbound', '27', 'spiralbound'].map(slug => filmsBySlug.get(slug));
+const filmRevealOrder = ['real', 'asasuzume', 'tiricordi', 'traum', 'ssababa', 'unbound', '27', 'spiralbound'].map(slug => filmsBySlug.get(slug));
 const releases = {
+  real: {
+    apple:'https://music.apple.com/au/album/real/6830603508?i=6830603510',
+    spotify:'https://open.spotify.com/track/7ACVmG6UheTGSaV9AmAhJH?si=d25203e2d44a440c'
+  },
   spiralbound: {
     apple:'https://music.apple.com/au/album/spiralbound/6793890953?i=6793890954',
     spotify:'https://open.spotify.com/track/6xR82f73BPguEFnBIKiUMd?si=677f5c39bde94b88'
